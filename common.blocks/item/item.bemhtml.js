@@ -1,9 +1,9 @@
-block('item')(
-    tag()('a'),
-    attrs()(function() {
-        return {
-            href: this.ctx.url,
-            target: '_blank'
-        }
-    })
-);
+// block('item')(
+//     tag()('a'),
+//     attrs()(function() {
+//         return {
+//             href: this.ctx.url,
+//             target: '_blank'
+//         }
+//     })
+// );

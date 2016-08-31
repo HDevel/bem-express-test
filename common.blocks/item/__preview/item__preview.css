@@ -1,3 +1,7 @@
 .item__preview {
+    width: 140px;
+    height: 140px;
+    line-height: 140px;
+    text-align: center;
     float: left;
 }

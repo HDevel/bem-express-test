@@ -8,7 +8,7 @@ block('search')(
                     block: this.block,
                     elem: 'input'
                 },
-                mods: { theme: 'islands', size: 'm' },
+                mods: { theme: 'islands', size: 'l' },
                 placeholder: 'Введите имя',
                 val: this.ctx.text
             }

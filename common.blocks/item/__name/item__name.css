@@ -1,0 +1,13 @@
+.item__name {
+    width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+
+    margin: 10px 0;
+}

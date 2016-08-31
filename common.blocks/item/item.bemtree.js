@@ -1,8 +1,6 @@
 block('item').content()(function() {
     var item = this.ctx.item;
 
-    this.ctx.url = item.url;
-
     return [
         {
             elem: 'preview',
@@ -13,6 +11,7 @@ block('item').content()(function() {
         },
         {
             elem: 'name',
+            url: item.url,
             content: item.name
         },
         {
@@ -21,6 +20,10 @@ block('item').content()(function() {
                 return {
                     elem: 'price',
                     content: [
+                        {
+                            elem: 'date',
+                            date: price.date
+                        },
                         {
                             elem: 'current-price',
                             content: price.price

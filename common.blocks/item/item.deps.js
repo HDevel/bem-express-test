@@ -4,7 +4,11 @@
             elems: [
                 'image',
                 'name',
-                'preview'
+                'preview',
+                'prices',
+                'current-price',
+                'previous-price',
+                'date'
             ]
         }
     ]

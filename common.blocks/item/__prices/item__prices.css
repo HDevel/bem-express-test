@@ -1,0 +1,5 @@
+.item__prices {
+    width: 400px;
+    display: inline-block;
+    line-height: 20px;
+}

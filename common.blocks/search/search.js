@@ -5,8 +5,8 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
             js: function() {
                 var options = this.options = {};
 
-                location.search.split(/\?|&/).forEach(function(v){
-                    if(v.length){
+                location.search.split(/\?|&/).forEach(function(v) {
+                    if (v.length) {
                         v = v.split('=');
                         options[v[0]] = decodeURIComponent(v[1]);
                     }
@@ -25,17 +25,23 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                 return
             }
 
-            history.pushState({},'','?text=' + val);
+            if (this._onChangeDebounce) {
+                clearTimeout(this._onChangeDebounce);
+            }
 
-            $.ajax({
-                url: 'http://localhost:3000/search',
-                data: {
-                    text: val
-                },
-                success: function(data) {
-                    $(window).trigger('update', data);
-                }
-            });
+            this._onChangeDebounce = setTimeout(function() {
+                history.pushState({}, '', '?text=' + val);
+
+                $.ajax({
+                    url: 'http://localhost:3000/search',
+                    data: {
+                        text: val
+                    },
+                    success: function(data) {
+                        $(window).trigger('update', data);
+                    }
+                });
+            }.bind(this), 500);
         }
     }, {
         live: function() {
