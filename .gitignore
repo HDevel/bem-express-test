@@ -6,6 +6,14 @@ node_modules/
 npm-debug.log
 
 static/index.min.*
+.bot-users
+bot-token.js
+bower_components/
+dns-save/
+logs/
+mongo-data/
+mongo-path.js
+mongod.conf
 
 # bem
 .enb/tmp/
