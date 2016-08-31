@@ -1,5 +1,8 @@
 block('body').content()(function() {
     return [
-        'body content'
+        {
+            block: 'item-list',
+            content: this.data.items
+        }
     ];
 });

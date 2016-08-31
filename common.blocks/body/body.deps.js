@@ -1,0 +1,3 @@
+({
+    shouldDeps: ['item-list']
+})

@@ -5,9 +5,6 @@ block('page').content()(function() {
         },
         {
             block: 'body'
-        },
-        {
-            block: 'footer'
         }
     ];
 });

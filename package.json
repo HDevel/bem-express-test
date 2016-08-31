@@ -43,6 +43,8 @@
   },
   "scripts": {
     "start": "node server",
+    "save": "node dns-save/save.js",
+    "mongo": "mongod --config mongod.conf",
     "postinstall": "npm run deps",
     "deps": "bower i",
     "make": "enb make",

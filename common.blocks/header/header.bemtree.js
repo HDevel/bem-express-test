@@ -1,7 +1,8 @@
 block('header').content()(function() {
     return [
         {
-            block: 'logo'
-        }
+            block: 'search',
+            text: this.data.query.text
+        },
     ];
 });

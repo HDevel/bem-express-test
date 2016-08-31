@@ -1,5 +1,8 @@
 Object.assign || (Object.assign = require('object-assign'));
 
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017/dns-shop';
+
 var fs = require('fs'),
     path = require('path'),
     express = require('express'),
@@ -19,6 +22,7 @@ var fs = require('fs'),
     config = require('./config'),
     staticFolder = config.staticFolder,
 
+    getData = require('./get-data'),
     Render = require('./render'),
     render = Render.render,
     dropCache = Render.dropCache,
@@ -59,17 +63,38 @@ app.get('/ping/', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-    render(req, res, {
-        view: 'index',
-        title: 'Main page',
-        meta: {
-            description: 'Page description',
-            og: {
-                url: 'https://site.com',
-                siteName: 'Site name'
-            }
-        }
-    })
+    getData(req, function(items) {
+        render(req, res, {
+            view: 'index',
+            title: 'Main page',
+            meta: {
+                description: 'Page description',
+                og: {
+                    url: 'https://site.com',
+                    siteName: 'Site name'
+                }
+            },
+            items: items,
+            query: req.query
+        });
+    });
+});
+
+app.get('/search', function(req, res) {
+    getData(req, function(data) {
+        render(req, res, null, data);
+    });
+});
+
+app.get('/code', function(req, res) {
+    MongoClient.connect(url, function(err, db) {
+        var collection = db.collection('items');
+
+        collection.find({ query: req.query.id }).limit(100).toArray(function(err, docs) {
+            db.close();
+            res.send(docs);
+        });
+    });
 });
 
 app.get('*', function(req, res) {
