@@ -2,6 +2,12 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/dns-shop';
 
 module.exports = function(req, callback) {
+    if (req.query.text === undefined) {
+        callback([]);
+
+        return;
+    }
+
     MongoClient.connect(url, function(err, db) {
         var collection = db.collection('items');
         var search = req.query.text.toLowerCase().split(' ');

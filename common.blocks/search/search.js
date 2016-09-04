@@ -3,27 +3,11 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: function() {
-                var options = this.options = {};
-
-                location.search.split(/\?|&/).forEach(function(v) {
-                    if (v.length) {
-                        v = v.split('=');
-                        options[v[0]] = decodeURIComponent(v[1]);
-                    }
-                });
-
-                if (options.text) {
-                    this.findBlockOn('input', 'input').setVal(options.text);
-                }
             }
         },
 
         _onChange: function(e) {
             var val = e.target.getVal();
-
-            if (this.options.text === val || val.length < 3) {
-                return
-            }
 
             if (this._onChangeDebounce) {
                 clearTimeout(this._onChangeDebounce);
@@ -38,8 +22,8 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                         text: val
                     },
                     success: function(data) {
-                        $(window).trigger('update', data);
-                    }
+                        this.emit('search', data);
+                    }.bind(this)
                 });
             }.bind(this), 500);
         }
@@ -49,7 +33,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                 this._onChange(e);
             });
 
-            return false;
+            return true;
         }
     }));
 

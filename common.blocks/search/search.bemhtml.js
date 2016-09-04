@@ -9,7 +9,7 @@ block('search')(
                     elem: 'input'
                 },
                 mods: { theme: 'islands', size: 'l' },
-                placeholder: 'Введите имя',
+                placeholder: 'Введите запрос в DNS-shop',
                 val: this.ctx.text
             }
         ];

@@ -81,8 +81,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/search', function(req, res) {
-    getData(req, function(data) {
-        render(req, res, null, data);
+    getData(req, function(items) {
+        render(req, res, null, items);
     });
 });
 

@@ -1,4 +1,6 @@
 var DNS = require('./dns-get');
+var fs = require('fs');
+var idFile = './dns-save/.current-id';
 var dbCollection = 'items';
 var MongoClient = require('mongodb').MongoClient;
 
@@ -12,18 +14,22 @@ DNS.getCatalogs(function(catalogs) {
     //     }
     // });
     MongoClient.connect(url, function(err, db) {
-        var collection = db.collection(dbCollection);
+        var collection = db.collection(dbCollection),
+            id = Number(fs.readFileSync(idFile));
 
-        getCat(catalogs, 0, collection, db);
+        getCat(catalogs, id, collection, db);
     });
 
 });
 
 function getCat(catalogs, from, collection, db) {
+    fs.writeFileSync(idFile, from);
+
     console.log('catalog ' + from + ' of ' + catalogs.length);
 
     if (catalogs.length <= from) {
         db.close();
+        fs.writeFileSync(idFile, 0);
         process.exit();
     }
 
