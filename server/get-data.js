@@ -17,7 +17,7 @@ module.exports = function(req, callback) {
                     return '(' + search.join('|') + ')'
                 }).join('.+'))
             }
-        ).toArray(function(err, docs) {
+        ).limit(100).toArray(function(err, docs) {
             db.close();
             callback(docs.map(function(item) {
                 var right = search.every(function(v) {

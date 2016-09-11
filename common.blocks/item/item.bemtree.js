@@ -16,7 +16,7 @@ block('item').content()(function() {
         },
         {
             elem: 'prices',
-            content: item.prices.map(function(price) {
+            content: item.prices.reverse().map(function(price) {
                 return {
                     elem: 'price',
                     content: [

@@ -90,7 +90,7 @@ app.get('/code', function(req, res) {
     MongoClient.connect(url, function(err, db) {
         var collection = db.collection('items');
 
-        collection.find({ query: req.query.id }).limit(100).toArray(function(err, docs) {
+        collection.find({ query: req.query.id }).toArray(function(err, docs) {
             db.close();
             res.send(docs);
         });

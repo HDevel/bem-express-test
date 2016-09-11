@@ -8,14 +8,13 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/dns-shop';
 
 DNS.getCatalogs(function(catalogs) {
-    // catalogs.forEach(function(v,i) {
-    //     if(v.indexOf('besprovodnye-naushniki') >= 0){
-    //         console.log(v + ' - ' + i)
-    //     }
-    // });
     MongoClient.connect(url, function(err, db) {
         var collection = db.collection(dbCollection),
+            id = 0;
+
+        if (fs.existsSync(idFile)) {
             id = Number(fs.readFileSync(idFile));
+        }
 
         getCat(catalogs, id, collection, db);
     });
@@ -30,8 +29,15 @@ function getCat(catalogs, from, collection, db) {
     if (catalogs.length <= from) {
         db.close();
         fs.writeFileSync(idFile, 0);
-        process.exit();
+        console.log('all done');
+        setTimeout(process.exit, 60 * 1000);
     }
+
+    // if(catalogs[from].indexOf('17a89c5616404e77/korpusa') === -1){
+    //     getCat(catalogs, ++from, collection, db);
+    //
+    //     return
+    // }
 
     DNS.getPrices(catalogs[from], function(items) {
         items && items.forEach(function(item) {
@@ -55,13 +61,19 @@ function getCat(catalogs, from, collection, db) {
                         item.prices[lastID] = current;
                     }
 
+                    if (item.name.indexOf('�') !== -1 && doc.name.indexOf('�') === -1) {
+                        item.name = doc.name;
+                    }
+
+                    item.query = item.name.toLowerCase();
+
                     collection.update({ code: item.code }, item);
                 }
             });
         });
 
-        // setTimeout(function(){
+        setTimeout(function(){
             getCat(catalogs, ++from, collection, db);
-        // }, Math.random() * 2000);
+        }, Math.random() * 500);
     });
 }

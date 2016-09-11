@@ -13,6 +13,11 @@ function getCatalogs(callback) {
             data += chunk;
         });
         res.on("end", function() {
+            if (data === 'TemporaryRedirect') {
+                console.log(data);
+                return
+            }
+
             var obj = {};
             data = data
                 .match(/\/catalog\/[a-z0-9/-]+/g)
@@ -28,7 +33,9 @@ function getCatalogs(callback) {
             callback(data);
         });
     }).on('error', function(e) {
-        console.log('getCatalogs error');
+        setTimeout(function(){
+            getCatalogs(callback);
+        }, 1000);
     });
 }
 
@@ -90,7 +97,6 @@ function getPrices(path, callback, page, items) {
 
                     items.push({
                         name: name,
-                        query: name.toLowerCase(),
                         url: 'http://www.dns-shop.ru' + url,
                         code: code,
                         img: img.indexOf('/') === 0 ? 'http://www.dns-shop.ru' + img : img,
@@ -105,10 +111,9 @@ function getPrices(path, callback, page, items) {
 
             if (!data.isEnd) {
                 console.log(path + ' - ' + page);
-
-                // setTimeout(function(){
+                setTimeout(function(){
                     getPrices(path, callback, page + 1, items);
-                // }, Math.random() * 2000);
+                }, Math.random() * 1000);
             } else {
                 console.log(path + ' - done');
                 callback(items);
@@ -116,7 +121,9 @@ function getPrices(path, callback, page, items) {
 
         });
     }).on('error', function(e) {
-        console.log('error');
+        setTimeout(function(){
+            getPrices(path, callback, page, items);
+        }, 1000);
     });
 }
 
@@ -124,16 +131,3 @@ module.exports = {
     getCatalogs: getCatalogs,
     getPrices: getPrices
 };
-
-
-// http://c.dns-shop.ru/thumb/st1/fit/320/250/7685cc6aaca052f6108ea508941cc52f/c06c88a687e2c9099d1e68a79db49804f14ce6a9b8d1533d20226af86e54e7cd.jpg
-
-
-// 123
-// 213
-// 231
-
-// 312
-// 132
-
-// 321

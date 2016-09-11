@@ -1,13 +1,12 @@
 modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
     provide(BEMDOM.decl(this.name, {
-        onSetMod: {
-            js: function() {
-            }
-        },
-
         _onChange: function(e) {
-            var val = e.target.getVal();
+            var val = $.trim(e.target.getVal().toLowerCase());
+
+            while (val.indexOf('  ') >= 0) {
+                val = val.replace(/  /g, ' ');
+            }
 
             if (this._onChangeDebounce) {
                 clearTimeout(this._onChangeDebounce);

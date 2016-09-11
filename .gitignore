@@ -5,6 +5,8 @@ node_modules/
 .svn
 npm-debug.log
 
+dns-save/.current-id
+
 static/index.min.*
 .bot-users
 bot-token.js

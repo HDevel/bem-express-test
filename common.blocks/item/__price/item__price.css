@@ -1,0 +1,4 @@
+.item__price:first-child {
+    line-height: 35px;
+    font-size: 20px;
+}

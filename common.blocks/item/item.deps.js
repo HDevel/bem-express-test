@@ -5,6 +5,7 @@
                 'image',
                 'name',
                 'preview',
+                'price',
                 'prices',
                 'current-price',
                 'previous-price',
