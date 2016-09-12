@@ -31,6 +31,8 @@ function getCat(catalogs, from, collection, db) {
         fs.writeFileSync(idFile, 0);
         console.log('all done');
         setTimeout(process.exit, 60 * 1000);
+
+        return
     }
 
     // if(catalogs[from].indexOf('17a89c5616404e77/korpusa') === -1){
