@@ -5,7 +5,11 @@ block('item').content()(function() {
         {
             elem: 'preview',
             content: {
-                elem: 'image',
+                block: 'image',
+                mix: {
+                    block: this.block,
+                    elem: 'image'
+                },
                 url: item.img
             }
         },
