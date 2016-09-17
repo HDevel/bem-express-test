@@ -16,7 +16,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                 history.pushState({}, '', '?text=' + val);
 
                 $.ajax({
-                    url: 'http://localhost:3000/search',
+                    url: '/search',
                     data: {
                         text: val
                     },
