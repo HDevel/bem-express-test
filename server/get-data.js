@@ -1,5 +1,6 @@
-var MongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/dns-shop';
+var MongoClient = require('mongodb').MongoClient,
+    combination = require('./combinations'),
+    url = 'mongodb://localhost:27017/dns-shop';
 
 module.exports = function(req, callback) {
     if (req.query.text === undefined) {
@@ -9,26 +10,17 @@ module.exports = function(req, callback) {
     }
 
     MongoClient.connect(url, function(err, db) {
-        var collection = db.collection('items');
-        var search = req.query.text.toLowerCase().split(' ');
-        collection.find(
-            {
-                query: new RegExp(search.map(function() {
-                    return '(' + search.join('|') + ')'
-                }).join('.+'))
-            }
-        ).limit(100).toArray(function(err, docs) {
-            db.close();
-            callback(docs.map(function(item) {
-                var right = search.every(function(v) {
-                    return item.query.indexOf(v) >= 0;
-                });
-
-                return right ? {
-                    block: 'item',
-                    item: item
-                } : '';
-            }));
-        });
+        db.collection('items')
+            .find({ query: new RegExp(combination(req.query.text)) })
+            .limit(100)
+            .toArray(function(err, docs) {
+                db.close();
+                callback(docs.map(function(item) {
+                    return {
+                        block: 'item',
+                        item: item
+                    };
+                }));
+            });
     });
 };
