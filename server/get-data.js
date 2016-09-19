@@ -10,8 +10,15 @@ module.exports = function(req, callback) {
     }
 
     MongoClient.connect(url, function(err, db) {
+        var query = req.query.text,
+            search = combination(query);
+
+        if (query.match(/^".+"$/)) {
+            search = query.slice(1,-1);
+        }
+
         db.collection('items')
-            .find({ query: new RegExp(combination(req.query.text)) })
+            .find({ query: new RegExp(search) })
             .limit(100)
             .toArray(function(err, docs) {
                 db.close();
