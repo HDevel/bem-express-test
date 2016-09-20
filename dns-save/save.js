@@ -43,6 +43,8 @@ function getCat(catalogs, from, collection, db) {
 
     DNS.getPrices(catalogs[from], function(items) {
         items && items.forEach(function(item) {
+            item.price.diff = 0;
+
             collection.find({ code: item.code }).toArray(function(err, docs) {
                 if (!docs.length) {
                     item.prices = [item.price];
@@ -58,8 +60,14 @@ function getCat(catalogs, from, collection, db) {
                         current = item.price;
 
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
+                        current.diff = (current.price / last.price) - 1;
+
                         item.prices.push(current);
                     } else {
+                        if (item.prices.length > 1) {
+                            current.diff = (current.price / item.prices[lastID - 1].price) - 1;
+                        }
+
                         item.prices[lastID] = current;
                     }
 
