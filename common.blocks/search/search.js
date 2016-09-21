@@ -2,10 +2,12 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
 
     provide(BEMDOM.decl(this.name, {
         _onChange: function(e) {
-            var val = $.trim(e.target.getVal().toLowerCase());
+            var val = e.target.getVal().split('%'),
+                search = val[0].toLowerCase().trim(),
+                diff = val[1];
 
-            while (val.indexOf('  ') >= 0) {
-                val = val.replace(/  /g, ' ');
+            while (search.indexOf('  ') >= 0) {
+                search = search.replace(/  /g, ' ');
             }
 
             if (this._onChangeDebounce) {
@@ -13,12 +15,13 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
             }
 
             this._onChangeDebounce = setTimeout(function() {
-                history.pushState({}, '', '?text=' + val);
+                history.pushState({}, '', '?text=' + search + (diff ? '&diff=' + diff : ''));
 
                 $.ajax({
                     url: '/search',
                     data: {
-                        text: val
+                        text: search,
+                        diff: diff
                     },
                     success: function(data) {
                         this.emit('search', data);

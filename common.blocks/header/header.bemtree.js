@@ -1,8 +1,10 @@
 block('header').content()(function() {
+    var query = this.data.query;
+
     return [
         {
             block: 'search',
-            text: this.data.query.text
-        },
+            text: query.text + (query.diff ? ' %' + query.diff : '')
+        }
     ];
 });

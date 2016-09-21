@@ -3,24 +3,27 @@ var MongoClient = require('mongodb').MongoClient,
     url = 'mongodb://localhost:27017/dns-shop';
 
 module.exports = function(req, callback) {
-    req.query.text = req.query.text || '';
+    var text = (req.query.text || '').toString().trim(),
+        diff = parseFloat(req.query.diff) || (text ? 0 : -40);
 
-    req.query.diff = parseFloat(req.query.diff) || 0;
-    req.query.diff = req.query.diff / 100;
+    diff = diff / 100;
 
     MongoClient.connect(url, function(err, db) {
-        var query = req.query.text,
-            search = combination(query);
+        var search = combination(text),
+            find = {};
 
-        if (query.match(/^".+"$/)) {
-            search = query.slice(1, -1);
+        if (text.match(/^".+"$/)) {
+            search = text.slice(1, -1);
+        }
+
+        find.query = new RegExp(search);
+
+        if (diff !== 0) {
+            find['price.diff'] = diff < 0 ? { $lte: diff } : { $gte: diff };
         }
 
         db.collection('items')
-            .find({
-                query: new RegExp(search),
-                'price.diff': { $lte: req.query.diff }
-            })
+            .find(find)
             .limit(100)
             .toArray(function(err, docs) {
                 db.close();
