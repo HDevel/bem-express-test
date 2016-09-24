@@ -1,21 +1,40 @@
 modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
     provide(BEMDOM.decl(this.name, {
+        onSetMod: {
+            js: {
+                inited: function() {
+                    this._input = this.findBlockOn('input', 'input');
+                    history.replaceState({ text: this._input.getVal() }, '');
+
+                    this._bindEvents();
+                }
+            }
+        },
+
+        _bindEvents: function() {
+            this._input.on('change', this._onChange, this);
+
+            window.addEventListener('popstate', function(e) {
+                this._input.setVal(e.state.text);
+            }.bind(this), false);
+        },
+
         _onChange: function(e) {
-            var val = e.target.getVal().split('%'),
-                search = val[0].toLowerCase().trim(),
-                diff = val[1];
+            var val = e.target.getVal(),
+                valData = val.split('%'),
+                search = valData[0].toLowerCase().trim(),
+                diff = valData[1];
 
-            while (search.indexOf('  ') >= 0) {
-                search = search.replace(/  /g, ' ');
-            }
+            search = search.replace(/ +/g, ' ');
 
-            if (this._onChangeDebounce) {
-                clearTimeout(this._onChangeDebounce);
-            }
+            clearTimeout(this._onChangeDebounce);
+
 
             this._onChangeDebounce = setTimeout(function() {
-                history.pushState({}, '', '?text=' + search + (diff ? '&diff=' + diff : ''));
+                if (history.state && history.state.text !== val) {
+                    history.pushState({ text: val }, '', '?text=' + search + (diff ? '&diff=' + diff : ''));
+                }
 
                 $.ajax({
                     url: '/search',
@@ -28,14 +47,6 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                     }.bind(this)
                 });
             }.bind(this), 500);
-        }
-    }, {
-        live: function() {
-            this.liveInitOnBlockInsideEvent('change', 'input', function(e) {
-                this._onChange(e);
-            });
-
-            return true;
         }
     }));
 

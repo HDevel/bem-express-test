@@ -4,7 +4,7 @@ block('header').content()(function() {
     return [
         {
             block: 'search',
-            text: query.text + (query.diff ? ' %' + query.diff : '')
+            text: (query.text || '') + (query.diff ? ' %' + query.diff : '')
         }
     ];
 });
