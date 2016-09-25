@@ -49,6 +49,8 @@ function getCat(catalogs, from, collection, db) {
                 if (!docs.length) {
                     item.prices = [item.price];
 
+                    item.query = item.name.toLowerCase();
+
                     collection.insert(item);
                 } else {
                     var doc = docs[0];
