@@ -87,7 +87,7 @@ app.get('/search', function(req, res) {
 });
 
 app.get('/current-load', function(req, res) {
-    render(req, res, null, Number(fs.readFileSync('./dns-save/.current-id')));
+    render(req, res, null, String(fs.readFileSync('./dns-save/.current-id')));
 
 });
 
