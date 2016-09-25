@@ -4,7 +4,7 @@ var MongoClient = require('mongodb').MongoClient,
 
 module.exports = function(req, callback) {
     var text = (req.query.text || '').toString().trim(),
-        diff = parseFloat(req.query.diff || (text ? 0 : -0.01));
+        diff = parseFloat(req.query.diff || 0);
 
     diff = diff / 100;
 
@@ -19,12 +19,13 @@ module.exports = function(req, callback) {
 
         find.query = new RegExp(search);
 
-        if (!text) {
+        if (!text && !diff) {
             var sec = 1000,
                 min = sec * 60,
                 hour = min * 60,
                 day = hour * 24;
 
+            diff = 0.001;
             find['price.diffDate'] = { $gt: (new Date().getTime() - day) };
             sort = { "sort": [['price.date', -1]] };
         }
