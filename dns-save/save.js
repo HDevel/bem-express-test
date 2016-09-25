@@ -5,7 +5,7 @@ var dbCollection = 'items';
 var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-var url = 'mongodb://localhost:27017/dns-shop';
+var url = 'mongodb://0.0.0.0:27017/dns-shop';
 
 DNS.getCatalogs(function(catalogs) {
     MongoClient.connect(url, function(err, db) {
