@@ -11,7 +11,7 @@ module.exports = function(req, callback) {
     MongoClient.connect(url, function(err, db) {
         var search = combination(text),
             find = {},
-            sort = {"sort" : [['price.price', -1]]};
+            sort = { "sort": [['price.price', -1]] };
 
         if (text.match(/^".+"$/)) {
             search = text.slice(1, -1);
@@ -25,8 +25,8 @@ module.exports = function(req, callback) {
                 hour = min * 60,
                 day = hour * 24;
 
-            find['price.date'] = { $gte: (new Date().getTime() - day) };
-            sort = {"sort" : [['price.date', -1]]};
+            find['price.diffDate'] = { $gt: (new Date().getTime() - day) };
+            sort = { "sort": [['price.date', -1]] };
         }
 
         if (diff !== 0) {
