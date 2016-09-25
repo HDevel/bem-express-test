@@ -66,7 +66,7 @@ app.get('/', function(req, res) {
     getData(req, function(items) {
         render(req, res, {
             view: 'index',
-            title: 'Main page',
+            title: 'Цены DNS',
             meta: {
                 description: 'Page description',
                 og: {
