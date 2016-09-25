@@ -1,5 +1,6 @@
 .item__image {
-    vertical-align: middle;
+    display: block;
     max-width: 0.9em;
     max-height: 0.9em;
+    margin: 0.05em auto;
 }
