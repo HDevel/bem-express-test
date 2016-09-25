@@ -44,6 +44,7 @@ function getCat(catalogs, from, collection, db) {
     DNS.getPrices(catalogs[from], function(items) {
         items && items.forEach(function(item) {
             item.price.diff = 0;
+            item.price.diffDate = 0;
 
             collection.find({ code: item.code }).toArray(function(err, docs) {
                 if (!docs.length) {
@@ -71,7 +72,7 @@ function getCat(catalogs, from, collection, db) {
                             current.diff = (current.price / item.prices[lastID - 1].price) - 1;
                         }
 
-                        current.diffDate = last.diffDate;
+                        current.diffDate = last.diffDate || 0;
 
                         item.prices[lastID] = current;
                     }
