@@ -1,7 +1,14 @@
 .item__preview {
-    width: 140px;
-    height: 140px;
-    line-height: 140px;
+    font-size: 140px;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
     text-align: center;
     float: left;
+}
+
+@media screen and (max-width: 320px) {
+    .item__preview {
+        font-size: 100px;
+    }
 }

@@ -3,3 +3,9 @@
     display: inline-block;
     line-height: 20px;
 }
+
+@media screen and (max-width: 320px) {
+    .item__prices {
+        width: 200px;
+    }
+}

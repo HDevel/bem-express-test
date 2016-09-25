@@ -11,3 +11,11 @@
 
     margin: 10px 0;
 }
+
+@media screen and (max-width: 320px) {
+    .item__name {
+        width: 200px;
+        font-size: 12px;
+        white-space: normal;
+    }
+}
