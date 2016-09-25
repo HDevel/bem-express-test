@@ -86,15 +86,9 @@ app.get('/search', function(req, res) {
     });
 });
 
-app.get('/code', function(req, res) {
-    MongoClient.connect(url, function(err, db) {
-        var collection = db.collection('items');
+app.get('/current-load', function(req, res) {
+    render(req, res, null, Number(fs.readFileSync('./dns-save/.current-id')));
 
-        collection.find({ query: req.query.id }).toArray(function(err, docs) {
-            db.close();
-            res.send(docs);
-        });
-    });
 });
 
 app.get('*', function(req, res) {
