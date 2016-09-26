@@ -92,6 +92,6 @@ function getCat(catalogs, from, collection, db) {
 
         setTimeout(function(){
             getCat(catalogs, ++from, collection, db);
-        }, Math.random() * 500);
+        }, Math.random() * 2500);
     });
 }

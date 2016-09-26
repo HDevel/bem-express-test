@@ -113,7 +113,7 @@ function getPrices(path, callback, page, items) {
                 console.log(path + ' - ' + page);
                 setTimeout(function(){
                     getPrices(path, callback, page + 1, items);
-                }, Math.random() * 1000);
+                }, Math.random() * 2500);
             } else {
                 console.log(path + ' - done');
                 callback(items);
