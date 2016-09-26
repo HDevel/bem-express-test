@@ -25,7 +25,7 @@ module.exports = function(req, callback) {
                 hour = min * 60,
                 day = hour * 24;
 
-            diff = -0.001;
+            find['price.sale.price'] = { $lte: -500 };
             find['price.sale.date'] = { $gt: (new Date().getTime() - day) };
             sort = { "sort": [['price.date', -1]] };
         }
