@@ -76,14 +76,6 @@ function getCat(catalogs, from, collection, db) {
                     } else {
                         current.sale = last.sale;
 
-                        if (lastID >= 1) {
-                            current.sale = {
-                                percent: (current.price / item.prices[lastID - 1].price) - 1,
-                                date: (last.sale && last.sale.date) || last.diffDate || 0,
-                                price: current.price - item.prices[lastID - 1].price
-                            };
-                        }
-
                         item.prices[lastID] = current;
                     }
 
