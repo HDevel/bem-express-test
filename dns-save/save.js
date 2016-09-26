@@ -43,6 +43,12 @@ function getCat(catalogs, from, collection, db) {
 
     DNS.getPrices(catalogs[from], function(items) {
         items && items.forEach(function(item) {
+            item.price.sale = {
+                percent: 0,
+                date: 0,
+                price: 0
+            };
+
             item.price.diff = 0;
             item.price.diffDate = 0;
 
@@ -62,7 +68,15 @@ function getCat(catalogs, from, collection, db) {
                         last = item.prices[lastID],
                         current = item.price;
 
+                    current.sale = last.sale;
+
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
+                        current.sale = {
+                            percent: (current.price / last.price) - 1,
+                            date: new Date().getTime(),
+                            price: current.price - last.price
+                        };
+
                         current.diff = (current.price / last.price) - 1;
                         current.diffDate = new Date().getTime();
                         current.diffPrice = current.price - last.price;
