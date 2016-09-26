@@ -36,7 +36,7 @@ module.exports = function(req, callback) {
 
         db.collection('items')
             .find(find, sort)
-            .limit(100)
+            .limit(!text && !diff ? 500 : 150)
             .toArray(function(err, docs) {
                 db.close();
                 callback(docs
