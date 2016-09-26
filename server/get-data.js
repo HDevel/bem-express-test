@@ -26,12 +26,12 @@ module.exports = function(req, callback) {
                 day = hour * 24;
 
             diff = -0.001;
-            find['price.diffDate'] = { $gt: (new Date().getTime() - day) };
+            find['price.sale.date'] = { $gt: (new Date().getTime() - day) };
             sort = { "sort": [['price.date', -1]] };
         }
 
         if (diff !== 0) {
-            find['price.diff'] = diff < 0 ? { $lte: diff } : { $gte: diff };
+            find['price.sale.percent'] = diff < 0 ? { $lte: diff } : { $gte: diff };
         }
 
         db.collection('items')

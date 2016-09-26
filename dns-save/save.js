@@ -49,9 +49,6 @@ function getCat(catalogs, from, collection, db) {
                 price: 0
             };
 
-            item.price.diff = 0;
-            item.price.diffDate = 0;
-
             collection.find({ code: item.code }).toArray(function(err, docs) {
                 if (!docs.length) {
                     item.prices = [item.price];
@@ -68,8 +65,6 @@ function getCat(catalogs, from, collection, db) {
                         last = item.prices[lastID],
                         current = item.price;
 
-                    current.sale = last.sale;
-
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
                         current.sale = {
                             percent: (current.price / last.price) - 1,
@@ -77,18 +72,9 @@ function getCat(catalogs, from, collection, db) {
                             price: current.price - last.price
                         };
 
-                        current.diff = (current.price / last.price) - 1;
-                        current.diffDate = new Date().getTime();
-                        current.diffPrice = current.price - last.price;
-
                         item.prices.push(current);
                     } else {
-                        if (item.prices.length > 1) {
-                            current.diff = (current.price / item.prices[lastID - 1].price) - 1;
-                            current.diffPrice = current.price - item.prices[lastID - 1].price;
-                        }
-
-                        current.diffDate = last.diffDate || 0;
+                        current.sale = last.sale;
 
                         item.prices[lastID] = current;
                     }
