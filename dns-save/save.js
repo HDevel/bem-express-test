@@ -65,11 +65,13 @@ function getCat(catalogs, from, collection, db) {
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
                         current.diff = (current.price / last.price) - 1;
                         current.diffDate = new Date().getTime();
+                        current.diffPrice = current.price - last.price;
 
                         item.prices.push(current);
                     } else {
                         if (item.prices.length > 1) {
                             current.diff = (current.price / item.prices[lastID - 1].price) - 1;
+                            current.diffPrice = current.price - item.prices[lastID - 1].price;
                         }
 
                         current.diffDate = last.diffDate || 0;
