@@ -1,7 +1,7 @@
 block('item').elem('date')(
     tag()('span'),
     content()(function() {
-        var date = new Date(this.ctx.date),
+        var date = new Date(this.ctx.date + 10800000), // хардкод, Москва
             min = date.getMinutes().toString(),
             hour = date.getHours(),
             day = date.getDate(),
