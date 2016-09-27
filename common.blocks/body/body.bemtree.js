@@ -1,8 +1,13 @@
 block('body').content()(function() {
+    var items = this.data.items;
+
     return [
         {
             block: 'item-list',
-            content: this.data.items
+            content: [
+                'Найдено: ' + items.length,
+                items
+            ]
         }
     ];
 });

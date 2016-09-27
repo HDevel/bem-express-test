@@ -82,7 +82,7 @@ app.get('/', function(req, res) {
 
 app.get('/search', function(req, res) {
     getData(req, function(items) {
-        render(req, res, null, items);
+        render(req, res, null, ['Найдено: ' + items.length, items]);
     });
 });
 

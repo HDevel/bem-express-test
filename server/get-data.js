@@ -4,7 +4,8 @@ var MongoClient = require('mongodb').MongoClient,
 
 module.exports = function(req, callback) {
     var text = (req.query.text || '').toString().trim(),
-        diff = parseFloat(req.query.diff || 0);
+        diff = parseFloat(req.query.diff || 0),
+        sale = parseInt(req.query.sale || -1000);
 
     diff = diff / 100;
 
@@ -25,7 +26,7 @@ module.exports = function(req, callback) {
                 hour = min * 60,
                 day = hour * 24;
 
-            find['price.sale.price'] = { $lte: -1000 };
+            find['price.sale.price'] = sale > 0 ? { $gte: sale } : { $lte: sale };
             find['price.sale.date'] = { $gt: (new Date().getTime() - day) };
             sort = { "sort": [['price.sale.date', -1]] };
         }

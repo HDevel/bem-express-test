@@ -24,23 +24,34 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
             var val = e.target.getVal(),
                 valData = val.split('%'),
                 search = valData[0].toLowerCase().trim(),
-                diff = valData[1];
+                diff = valData[1],
+                sale = '';
 
             search = search.replace(/ +/g, ' ');
+
+            if (search.match(/^-?[0-9]+руб$/)) {
+                sale = parseInt(search);
+                search = '';
+            }
 
             clearTimeout(this._onChangeDebounce);
 
 
             this._onChangeDebounce = setTimeout(function() {
                 if (history.state && history.state.text !== val) {
-                    history.pushState({ text: val }, '', '?text=' + search + (diff ? '&diff=' + diff : ''));
+                    history.pushState({ text: val }, '', '?' +
+                        'text=' + search +
+                        '&sale=' + sale +
+                        (diff ? '&diff=' + diff : '')
+                    );
                 }
 
                 $.ajax({
                     url: '/search',
                     data: {
                         text: search,
-                        diff: diff
+                        diff: diff,
+                        sale: sale
                     },
                     success: function(data) {
                         this.emit('search', data);
