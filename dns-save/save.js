@@ -61,6 +61,12 @@ function getCat(catalogs, from, collection, db) {
 
                     item.prices = doc.prices || [item.price];
 
+                    item.prices.forEach(function(v) {
+                        if (!v.firstSeenDate) {
+                            v.firstSeenDate = new Date(2016, 8, 24, 15, 0, Math.random() * 10000);
+                        }
+                    });
+
                     var lastID = item.prices.length - 1,
                         last = item.prices[lastID],
                         current = item.price;
@@ -68,17 +74,21 @@ function getCat(catalogs, from, collection, db) {
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
                         current.sale = {
                             percent: (current.price / last.price) - 1,
-                            date: new Date().getTime(),
                             price: current.price - last.price
                         };
+
+                        current.firstSeenDate = current.date;
 
                         item.prices.push(current);
                     } else {
                         current.sale = last.sale;
-                        current.date = last.date;
+                        current.firstSeenDate = last.firstSeenDate;
+                        current.lastSeenDate = current.date;
 
                         item.prices[lastID] = current;
                     }
+
+                    delete current.date;
 
                     if (item.name.indexOf('�') !== -1 && doc.name.indexOf('�') === -1) {
                         item.name = doc.name;

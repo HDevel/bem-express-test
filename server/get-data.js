@@ -27,8 +27,8 @@ module.exports = function(req, callback) {
                 day = hour * 24;
 
             find['price.sale.price'] = sale > 0 ? { $gte: sale } : { $lte: sale };
-            find['price.sale.date'] = { $gt: (new Date().getTime() - day) };
-            sort = { "sort": [['price.sale.date', -1]] };
+            find['price.firstSeenDate'] = { $gt: (new Date().getTime() - day) };
+            sort = { "sort": [['price.firstSeenDate', -1]] };
         }
 
         if (diff !== 0) {
