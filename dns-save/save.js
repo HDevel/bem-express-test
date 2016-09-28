@@ -75,6 +75,7 @@ function getCat(catalogs, from, collection, db) {
                         item.prices.push(current);
                     } else {
                         current.sale = last.sale;
+                        current.date = last.date;
 
                         item.prices[lastID] = current;
                     }
