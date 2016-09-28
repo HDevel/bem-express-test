@@ -51,8 +51,8 @@ function getCat(catalogs, from, collection, db) {
 
             collection.find({ code: item.code }).toArray(function(err, docs) {
                 if (!docs.length) {
+                    item.price.firstSeenDate = item.price.lastSeenDate;
                     item.prices = [item.price];
-
                     item.query = item.name.toLowerCase();
 
                     collection.insert(item);
@@ -76,7 +76,7 @@ function getCat(catalogs, from, collection, db) {
                         item.prices.push(current);
                     } else {
                         current.sale = last.sale;
-                        current.firstSeenDate = last.firstSeenDate;
+                        current.firstSeenDate = last.firstSeenDate || current.lastSeenDate;
 
                         item.prices[lastID] = current;
                     }
