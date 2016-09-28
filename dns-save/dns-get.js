@@ -93,7 +93,9 @@ function getPrices(path, callback, page, items) {
                         prevPrice = Number(prevPrice && prevPrice[1].replace(/ /g, '') || 0),
 
                         priceReg = /data-product-param="price" data-value="([0-9]+)"/,
-                        price = Number(priceReg.exec(rawItem)[1]);
+                        price = Number(priceReg.exec(rawItem)[1]),
+
+                        date = new Date().getTime();
 
                     items.push({
                         name: name,
@@ -101,7 +103,8 @@ function getPrices(path, callback, page, items) {
                         code: code,
                         img: img.indexOf('/') === 0 ? 'http://www.dns-shop.ru' + img : img,
                         price: {
-                            date: new Date().getTime(),
+                            date: date,
+                            lastSeenDate: date,
                             price: price,
                             prevPrice: prevPrice
                         }
