@@ -30,10 +30,10 @@ block('item').content()(function() {
                         },
                         {
                             elem: 'current-price',
-                            content: price.price
+                            content: price.price + 1
                         }, price.prevPrice ? {
                             elem: 'previous-price',
-                            content: price.prevPrice
+                            content: price.prevPrice + 1
                         } : ''
                     ]
                 }
