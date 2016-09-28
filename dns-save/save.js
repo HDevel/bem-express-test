@@ -61,12 +61,6 @@ function getCat(catalogs, from, collection, db) {
 
                     item.prices = doc.prices || [item.price];
 
-                    item.prices.forEach(function(v) {
-                        if (!v.firstSeenDate) {
-                            v.firstSeenDate = new Date(2016, 8, 24, 15, 0, Math.random() * 10000);
-                        }
-                    });
-
                     var lastID = item.prices.length - 1,
                         last = item.prices[lastID],
                         current = item.price;

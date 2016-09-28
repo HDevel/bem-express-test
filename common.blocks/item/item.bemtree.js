@@ -26,7 +26,7 @@ block('item').content()(function() {
                     content: [
                         {
                             elem: 'date',
-                            date: price.firstSeenDate
+                            date: price.date || price.firstSeenDate
                         },
                         {
                             elem: 'current-price',
