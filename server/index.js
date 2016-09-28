@@ -1,8 +1,5 @@
 Object.assign || (Object.assign = require('object-assign'));
 
-var MongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/dns-shop';
-
 var fs = require('fs'),
     path = require('path'),
     express = require('express'),
@@ -75,14 +72,17 @@ app.get('/', function(req, res) {
                 }
             },
             items: items,
+            current: Number(fs.readFileSync('./dns-save/.current-id')),
             query: req.query
         });
     });
 });
 
 app.get('/search', function(req, res) {
+    var current = Number(fs.readFileSync('./dns-save/.current-id'));
+
     getData(req, function(items) {
-        render(req, res, null, ['Найдено: ' + items.length, items]);
+        render(req, res, null, ['Найдено: ' + items.length + (current ? '; Обновление: ' + current : ''), items]);
     });
 });
 

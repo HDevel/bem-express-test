@@ -1,11 +1,12 @@
 block('body').content()(function() {
-    var items = this.data.items;
+    var items = this.data.items,
+        current = this.data.current;
 
     return [
         {
             block: 'item-list',
             content: [
-                'Найдено: ' + items.length,
+                'Найдено: ' + items.length + (current ? '; Обновление: ' + current : ''),
                 items
             ]
         }

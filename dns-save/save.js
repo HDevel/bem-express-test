@@ -71,18 +71,15 @@ function getCat(catalogs, from, collection, db) {
                             price: current.price - last.price
                         };
 
-                        current.firstSeenDate = current.date;
+                        current.firstSeenDate = current.lastSeenDate;
 
                         item.prices.push(current);
                     } else {
                         current.sale = last.sale;
                         current.firstSeenDate = last.firstSeenDate;
-                        current.lastSeenDate = current.date;
 
                         item.prices[lastID] = current;
                     }
-
-                    delete current.date;
 
                     if (item.name.indexOf('�') !== -1 && doc.name.indexOf('�') === -1) {
                         item.name = doc.name;

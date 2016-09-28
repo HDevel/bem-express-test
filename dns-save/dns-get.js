@@ -103,7 +103,7 @@ function getPrices(path, callback, page, items) {
                         code: code,
                         img: img.indexOf('/') === 0 ? 'http://www.dns-shop.ru' + img : img,
                         price: {
-                            date: date,
+                            lastSeenDate: date,
                             price: price,
                             prevPrice: prevPrice
                         }
