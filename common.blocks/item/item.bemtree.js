@@ -21,6 +21,19 @@ block('item').content()(function() {
         {
             elem: 'prices',
             content: item.prices.reverse().map(function(price) {
+                var round = [price.price, price.prevPrice].map(function(v) {
+                    var lastTwo = v.toString().slice(-2);
+
+                    if (lastTwo === '99') {
+                        return v + 1;
+                    } else if (lastTwo === '90') {
+                        return v + 10;
+                    }
+
+                    return v;
+                });
+
+
                 return {
                     elem: 'price',
                     content: [
@@ -30,10 +43,10 @@ block('item').content()(function() {
                         },
                         {
                             elem: 'current-price',
-                            content: price.price + 1
+                            content: round[0]
                         }, price.prevPrice ? {
                             elem: 'previous-price',
-                            content: price.prevPrice + 1
+                            content: round[1]
                         } : ''
                     ]
                 }
