@@ -1,5 +1,10 @@
 ({
     shouldDeps: [
+        {
+            mods: {
+                out: true
+            }
+        },
         'image',
         {
             elems: [
