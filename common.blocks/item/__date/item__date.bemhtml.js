@@ -5,13 +5,21 @@ block('item').elem('date')(
             min = date.getMinutes().toString(),
             hour = date.getHours(),
             day = date.getDate(),
+            weekDay = date.getDay(),
             month = date.getMonth() + 1,
-            year = date.getFullYear();
+            year = date.getFullYear(),
+            weekDays = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
 
         if (min.length < 2) {
             min = '0' + min;
         }
 
-        return day + '.' + month + '.' + year + ' ' + hour + ':' + min;
+        return [
+            {
+                elem: 'week-day',
+                content: weekDays[weekDay]
+            },
+            day + '.' + month + '.' + year + ' ' + hour + ':' + min
+        ]
     })
 );

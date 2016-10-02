@@ -15,6 +15,7 @@
                 'prices',
                 'current-price',
                 'previous-price',
+                'week-day',
                 'date'
             ]
         }
