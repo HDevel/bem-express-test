@@ -17,6 +17,9 @@ block('item').elem('date')(
         return [
             {
                 elem: 'week-day',
+                elemMods: {
+                    day: weekDay
+                },
                 content: weekDays[weekDay]
             },
             day + '.' + month + '.' + year + ' ' + hour + ':' + min
