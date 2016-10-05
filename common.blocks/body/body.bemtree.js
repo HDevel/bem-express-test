@@ -6,7 +6,7 @@ block('body').content()(function() {
         {
             block: 'item-list',
             content: [
-                'Найдено: ' + items.length + (current ? '; Обновление: ' + current : ''),
+                'Найдено: ' + items.length + (current ? '; Обновление: ' + current.toFixed(1) + '%' : ''),
                 items
             ]
         }

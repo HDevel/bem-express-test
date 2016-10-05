@@ -4,7 +4,11 @@ function getCatalogs(callback) {
     var options = {
             host: 'www.dns-shop.ru',
             port: 80,
-            path: ''
+            path: '',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                cookie: 'city_path=simferopol'
+            }
         },
         data = '';
 

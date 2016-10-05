@@ -72,23 +72,18 @@ app.get('/', function(req, res) {
                 }
             },
             items: items,
-            current: Number(fs.readFileSync('./dns-save/.current-id')),
+            current: 100 * Number(fs.readFileSync('./dns-save/.current-progress')),
             query: req.query
         });
     });
 });
 
 app.get('/search', function(req, res) {
-    var current = Number(fs.readFileSync('./dns-save/.current-id'));
+    var current = 100 * Number(fs.readFileSync('./dns-save/.current-progress'));
 
     getData(req, function(items) {
-        render(req, res, null, ['Найдено: ' + items.length + (current ? '; Обновление: ' + current : ''), items]);
+        render(req, res, null, ['Найдено: ' + items.length + (current ? '; Обновление: ' + current.toFixed(1) + '%' : ''), items]);
     });
-});
-
-app.get('/current-load', function(req, res) {
-    render(req, res, null, String(fs.readFileSync('./dns-save/.current-id')));
-
 });
 
 app.get('*', function(req, res) {

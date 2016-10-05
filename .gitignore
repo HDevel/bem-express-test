@@ -6,6 +6,7 @@ node_modules/
 npm-debug.log
 
 dns-save/.current-id
+dns-save/.current-progress
 */mongo-path.js
 
 static/index.min.*

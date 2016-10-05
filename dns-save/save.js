@@ -1,6 +1,6 @@
 var DNS = require('./dns-get');
 var fs = require('fs');
-var idFile = './dns-save/.current-id';
+var progressFile = './dns-save/.current-progress';
 var dbCollection = 'items';
 var MongoClient = require('mongodb').MongoClient;
 
@@ -9,37 +9,34 @@ var url = 'mongodb://0.0.0.0:27017/dns-shop';
 
 DNS.getCatalogs(function(catalogs) {
     MongoClient.connect(url, function(err, db) {
-        var collection = db.collection(dbCollection),
-            id = 0;
+        var collection = db.collection(dbCollection);
 
-        if (fs.existsSync(idFile)) {
-            id = Number(fs.readFileSync(idFile));
-        }
-
-        getCat(catalogs, id, collection, db);
+        getCat(catalogs, 0, collection, db);
     });
 
 });
 
 function getCat(catalogs, from, collection, db) {
-    fs.writeFileSync(idFile, from);
+    fs.writeFileSync(progressFile, from / (catalogs.length - 1));
 
-    console.log('catalog ' + from + ' of ' + catalogs.length);
+    // console.log('catalog ' + from + ' of ' + catalogs.length);
 
     if (catalogs.length <= from) {
         db.close();
-        fs.writeFileSync(idFile, 0);
+        fs.writeFileSync(progressFile, 0);
         console.log('all done');
         setTimeout(process.exit, 60 * 1000);
 
         return
     }
 
-    // if(catalogs[from].indexOf('17a89c5616404e77/korpusa') === -1){
-    //     getCat(catalogs, ++from, collection, db);
-    //
-    //     return
-    // }
+    /*
+    if (catalogs[from].indexOf('17a89c5616404e77/korpusa') === -1) {
+        getCat(catalogs, ++from, collection, db);
+
+        return
+    }
+    */
 
     DNS.getPrices(catalogs[from], function(items) {
         items && items.forEach(function(item) {
@@ -92,7 +89,7 @@ function getCat(catalogs, from, collection, db) {
             });
         });
 
-        setTimeout(function(){
+        setTimeout(function() {
             getCat(catalogs, ++from, collection, db);
         }, Math.random() * 2500);
     });
