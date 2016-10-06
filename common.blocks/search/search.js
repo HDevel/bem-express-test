@@ -52,7 +52,11 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                     );
                 }
 
-                $.ajax({
+                if (this._ajax) {
+                    this._ajax.abort();
+                }
+
+                this._ajax = $.ajax({
                     url: '/search',
                     data: {
                         text: search,
