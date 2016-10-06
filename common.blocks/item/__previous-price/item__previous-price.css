@@ -7,6 +7,6 @@
 @media screen and (max-width: 320px) {
     .item__previous-price {
         display: block;
-        margin-left: 80px;
+        margin-left: 90px;
     }
 }
