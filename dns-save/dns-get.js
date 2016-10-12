@@ -17,7 +17,7 @@ function getCatalogs(callback) {
             data += chunk;
         });
         res.on("end", function() {
-            if (data === 'TemporaryRedirect') {
+            if (data === 'TemporaryRedirect' || data.indexOf('<title>302 Found</title>') > -1) {
                 console.log(data);
                 return
             }
@@ -56,6 +56,8 @@ function getPrices(path, callback, page, items) {
         }
     };
     var data = '';
+
+    console.log(path + ' - ' + page + ' - start');
 
     http.get(options, function(res) {
         res.on("data", function(chunk) {
@@ -127,6 +129,8 @@ function getPrices(path, callback, page, items) {
 
         });
     }).on('error', function(e) {
+        console.log(path + ' - error');
+
         setTimeout(function(){
             getPrices(path, callback, page, items);
         }, 1000);
