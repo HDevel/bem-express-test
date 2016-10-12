@@ -57,6 +57,8 @@ function getPrices(path, callback, page, items) {
     };
     var data = '';
 
+    items = items || [];
+
     console.log(path + ' - ' + page + ' - start');
 
     http.get(options, function(res) {
@@ -72,7 +74,6 @@ function getPrices(path, callback, page, items) {
             data = JSON.parse(data);
 
             var rawData = data.content.split('<div class="product" data-id="product"');
-            items = items || [];
 
             for (var i = 1; i < rawData.length; i++) {
                 var rawItem = rawData[i],
