@@ -132,7 +132,7 @@ function getPrices(path, callback, page, items) {
         console.log(path + ' - error');
 
         setTimeout(function(){
-            getPrices(path, callback, page, items);
+            getPrices(path, callback, page + 1, items);
         }, 1000);
     });
 }
