@@ -5,6 +5,7 @@
     border: 1px solid #ccc;
     margin: 5px 0;
     box-sizing: border-box;
+    background-color: #fff;
 }
 
 @media screen and (max-width: 320px) {
