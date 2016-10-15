@@ -22,10 +22,13 @@ function getCat(catalogs, from, collection, db) {
     // console.log('catalog ' + from + ' of ' + catalogs.length);
 
     if (catalogs.length <= from) {
-        db.close();
         fs.writeFileSync(progressFile, 0);
         console.log('all done');
-        setTimeout(process.exit, 60 * 1000);
+
+        setTimeout(function(){
+            db.close();
+            process.exit();
+        }, 60 * 1000);
 
         return
     }
