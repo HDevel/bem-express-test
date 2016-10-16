@@ -67,7 +67,10 @@ function getPrices(path, callback, page, items) {
         });
         res.on("end", function() {
             if (data.indexOf('<') <= 5) {
-                callback();
+                console.log(path + ' - ' + page + ' - data.indexOf("<") <= 5');
+                console.log(data);
+
+                callback(items);
                 return
             }
 
@@ -134,7 +137,7 @@ function getPrices(path, callback, page, items) {
 
         setTimeout(function(){
             getPrices(path, callback, page + 1, items);
-        }, 1000);
+        }, Math.random() * 2500);
     });
 }
 
