@@ -66,18 +66,24 @@ function getPrices(path, callback, page, items) {
             data += chunk;
         });
         res.on("end", function() {
-            if (data.indexOf('<') <= 5) {
+            try{
+                data = JSON.parse(data);
+            } catch(e){}
+
+            if (typeof data === 'string') {
                 var title = data.match(/<title>.+<\/title>/g);
 
-                console.log(path + ' - ' + page + ' - data.indexOf("<") <= 5');
-                console.log(title && title[0]);
-                console.log(data.slice(0, 2000));
+                console.log(path + ' - ' + page + ' - data');
+
+                if(title) {
+                    console.log(title[0]);
+                }
+
+                console.log(data.replace(/[ 	\n]+/gm, ' ').slice(0, 2000));
 
                 callback(items);
                 return
             }
-
-            data = JSON.parse(data);
 
             var rawData = data.content.split('<div class="product" data-id="product"');
 
