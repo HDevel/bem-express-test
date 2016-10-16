@@ -47,7 +47,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                 if (history.state && history.state.text !== val) {
                     history.pushState({ text: val }, '', '?' +
                         'text=' + search +
-                        (sale ? '&sale=' + sale : '') +
+                        (sale != undefined ? '&sale=' + sale : '') +
                         (diff ? '&diff=' + diff : '')
                     );
                 }
