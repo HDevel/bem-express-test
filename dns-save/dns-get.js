@@ -67,8 +67,11 @@ function getPrices(path, callback, page, items) {
         });
         res.on("end", function() {
             if (data.indexOf('<') <= 5) {
+                var title = data.match(/<title>.+<\/title>/g);
+
                 console.log(path + ' - ' + page + ' - data.indexOf("<") <= 5');
-                console.log(data);
+                console.log(title && title[0]);
+                console.log(data.slice(0, 2000));
 
                 callback(items);
                 return
