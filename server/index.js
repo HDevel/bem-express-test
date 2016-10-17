@@ -61,7 +61,7 @@ app.get('/ping/', function(req, res) {
 
 app.get('/', function(req, res) {
     if (req.query.text) {
-        req.query.text = req.query.text.replace(/[*\[\]()]/g, '');
+        req.query.text = req.query.text.replace(/[*\[\](+)]/g, '');
     }
 
     getData(req, function(items) {

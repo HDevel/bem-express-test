@@ -22,7 +22,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
 
         _onChange: function(e) {
             var val = e.target.getVal(),
-                clearVal = val.replace(/[*\[\]()]/g, ''),
+                clearVal = val.replace(/[*\[\](+)]/g, ''),
                 valData = val.split('%'),
                 search = valData[0].toLowerCase().trim(),
                 diff = valData[1],
