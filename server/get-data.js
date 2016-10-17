@@ -14,43 +14,45 @@ module.exports = function(req, callback) {
     diff = diff / 100;
 
     MongoClient.connect(mongoProps.path, function(err, db) {
-        var search = combination(text),
-            find = {},
-            sort = { "sort": [['price.price', -1]] },
-            date = new Date().getTime();
+        db.authenticate(mongoProps.user, mongoProps.password, function(err, res) {
+            var search = combination(text),
+                find = {},
+                sort = { "sort": [['price.price', -1]] },
+                date = new Date().getTime();
 
-        if (text.match(/^".+"$/)) {
-            search = text.slice(1, -1);
-        }
+            if (text.match(/^".+"$/)) {
+                search = text.slice(1, -1);
+            }
 
-        find.query = new RegExp(search);
+            find.query = new RegExp(search);
 
-        if (!text && !diff) {
+            if (!text && !diff) {
 
-            find['price.sale.price'] = sale > 0 ? { $gte: sale } : { $lte: sale };
-            find['price.firstSeenDate'] = { $gt: (date - day) };
-            sort = { "sort": [['price.firstSeenDate', -1]] };
-        }
+                find['price.sale.price'] = sale > 0 ? { $gte: sale } : { $lte: sale };
+                find['price.firstSeenDate'] = { $gt: (date - day) };
+                sort = { "sort": [['price.firstSeenDate', -1]] };
+            }
 
-        if (diff !== 0) {
-            find['price.sale.percent'] = diff < 0 ? { $lte: diff } : { $gte: diff };
-        }
+            if (diff !== 0) {
+                find['price.sale.percent'] = diff < 0 ? { $lte: diff } : { $gte: diff };
+            }
 
-        db.collection('items')
-            .find(find, sort)
-            .limit(!text && !diff ? 500 : 150)
-            .toArray(function(err, docs) {
-                db.close();
-                callback(docs
-                    .map(function(item) {
-                        return {
-                            block: 'item',
-                            mods: {
-                                out: date - item.price.lastSeenDate > hour * 4
-                            },
-                            item: item
-                        };
-                    }));
-            });
+            db.collection('items')
+                .find(find, sort)
+                .limit(!text && !diff ? 500 : 150)
+                .toArray(function(err, docs) {
+                    db.close();
+                    callback(docs
+                        .map(function(item) {
+                            return {
+                                block: 'item',
+                                mods: {
+                                    out: date - item.price.lastSeenDate > hour * 4
+                                },
+                                item: item
+                            };
+                        }));
+                });
+        });
     });
 };

@@ -11,9 +11,11 @@ console.log('Process start at - ' + new Date());
 
 DNS.getCatalogs(function(catalogs) {
     MongoClient.connect(mongoProps.path, function(err, db) {
-        var collection = db.collection(dbCollection);
+        db.authenticate(mongoProps.user, mongoProps.password, function(err, res) {
+            var collection = db.collection(dbCollection);
 
-        getCat(catalogs, 0, collection, db);
+            getCat(catalogs, 0, collection, db);
+        });
     });
 
 });
