@@ -4,6 +4,7 @@ node_modules/
 .project
 .svn
 npm-debug.log
+mongod.conf
 
 dns-save/.current-id
 dns-save/.current-progress
