@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient,
     combination = require('./combinations'),
-    url = require('./mongo-path');
+    mongoProps = require('./../mongo-path');
 
 module.exports = function(req, callback) {
     var text = (req.query.text || '').toString().trim(),
@@ -13,7 +13,7 @@ module.exports = function(req, callback) {
 
     diff = diff / 100;
 
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(mongoProps.path, function(err, db) {
         var search = combination(text),
             find = {},
             sort = { "sort": [['price.price', -1]] },

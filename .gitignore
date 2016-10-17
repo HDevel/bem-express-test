@@ -8,7 +8,7 @@ mongod.conf
 
 dns-save/.current-id
 dns-save/.current-progress
-*/mongo-path.js
+mongo-path.js
 
 static/index.min.*
 .bot-users

@@ -1,22 +1,13 @@
 var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-var url = 'mongodb://localhost:27017/dns-shop';
+var mongoProps = require('./../mongo-path');
 
-MongoClient.connect(url, function(err, db) {
+MongoClient.connect(mongoProps.path, function(err, db) {
     var collection = db.collection('items');
 
-    collection.find({ name: /Ноутбук HP Notebook/ }).toArray(function(err, docs) {
-        console.log(docs);
+    collection.find({ name: /Ноутбук/ }).toArray(function(err, docs) {
+        console.log(docs && docs[0]);
+        process.exit();
     });
-
-    // collection.createIndex('names', { name: 'text' });
-    // collection.find({ name: /Ноутбук HP Notebook 15-ac104ur/ }).toArray(function(err, docs) {
-    // db.close();
-    //
-    // collection.runCommand( "text" , { search: "Ноутбук" } ,function() {
-    //     console.log(arguments)
-    // });
-    // console.log('===================')
-    // console.log(collection.find({$text:{$search:"Apple"}}));
 });

@@ -5,12 +5,12 @@ var dbCollection = 'items';
 var MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-var url = 'mongodb://0.0.0.0:27017/dns-shop';
+var mongoProps = require('./../mongo-path');
 
 console.log('Process start at - ' + new Date());
 
 DNS.getCatalogs(function(catalogs) {
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(mongoProps.path, function(err, db) {
         var collection = db.collection(dbCollection);
 
         getCat(catalogs, 0, collection, db);
