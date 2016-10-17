@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient,
     combination = require('./combinations'),
-    url = 'mongodb://0.0.0.0:27017/dns-shop';
+    url = require('./mongo-path');
 
 module.exports = function(req, callback) {
     var text = (req.query.text || '').toString().trim(),
