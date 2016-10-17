@@ -26,7 +26,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                 valData = val.split('%'),
                 search = valData[0].toLowerCase().trim(),
                 diff = valData[1],
-                sale = '';
+                sale;
 
             if (val !== clearVal) {
                 e.target.setVal(clearVal);
@@ -45,11 +45,13 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
 
             this._onChangeDebounce = setTimeout(function() {
                 if (history.state && history.state.text !== val) {
-                    history.pushState({ text: val }, '', '?' +
-                        'text=' + search +
-                        (sale != '' ? '&sale=' + sale : '') +
-                        (diff ? '&diff=' + diff : '')
-                    );
+                    var query = [];
+
+                    search != '' && query.push('text=' + search);
+                    sale != undefined && query.push('sale=' + sale);
+                    diff != undefined && query.push('diff=' + diff);
+
+                    history.pushState({ text: val }, '', query.length ? '?' + query.join('&') : '/');
                 }
 
                 if (this._ajax) {
