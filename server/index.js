@@ -67,13 +67,9 @@ app.get('/', function(req, res) {
     getData(req, function(items) {
         render(req, res, {
             view: 'index',
-            title: 'Цены DNS',
+            title: 'Цены',
             meta: {
-                description: 'Page description',
-                og: {
-                    url: 'https://site.com',
-                    siteName: 'Site name'
-                }
+                description: 'Трекер цен'
             },
             items: items,
             current: 100 * Number(fs.readFileSync('./dns-save/.current-progress')),
