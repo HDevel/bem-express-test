@@ -73,6 +73,7 @@ function getPrices(path, callback, page, items) {
             if (typeof data === 'string') {
                 var title = data.match(/<title>.+<\/title>/g);
 
+                console.log('JSON parse error at - ' + new Date());
                 console.log(path + ' - ' + page + ' - data');
 
                 if(title) {
