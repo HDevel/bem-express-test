@@ -1,9 +1,8 @@
 block('header').content()(function() {
     var query = this.data.query,
-        text = '',
-        sale = Number(query.sale);
+        text = '';
 
-    text += sale ? sale + 'руб' : '';
+    text += query.sale != '' ? query.sale + 'руб' : '';
     text += query.text || '';
     text += query.diff ? ' %' + query.diff : '';
 
