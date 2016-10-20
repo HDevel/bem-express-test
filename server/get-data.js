@@ -1,8 +1,20 @@
-var MongoClient = require('mongodb').MongoClient,
+var fs = require('fs'),
+    MongoClient = require('mongodb').MongoClient,
     combination = require('./combinations'),
     mongoProps = require('./../mongo-path');
 
 module.exports = function(req, callback) {
+    var date = new Date(),
+        fileName = 'req-log_' + date.getFullYear() + '-' + date.getDate() + '-' + (date.getMonth() + 1),
+        log = {
+            UA: req.get('User-Agent'),
+            address: req.connection.remoteAddress,
+            query: JSON.stringify(req.query),
+            date: date
+        };
+
+    fs.appendFile('./logs/' + fileName, JSON.stringify(log) + '\n');
+
     var text = (req.query.text || '').toString().trim(),
         diff = parseFloat(req.query.diff || 0),
         sale = parseInt(req.query.sale || -1000),
