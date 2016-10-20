@@ -1,6 +1,7 @@
 var DNS = require('./dns-get');
 var fs = require('fs');
 var progressFile = './dns-save/.current-progress';
+var blackList = require('./black-list');
 var dbCollection = 'items';
 var MongoClient = require('mongodb').MongoClient;
 
@@ -37,15 +38,24 @@ function getCat(catalogs, from, collection, db) {
         return
     }
 
+    var path = catalogs[from];
+
+    if (blackList.indexOf(path) > -1) {
+        console.log(path + ' - skip');
+        getCat(catalogs, ++from, collection, db);
+
+        return
+    }
+
     /*
-    if (catalogs[from].indexOf('17a89c5616404e77/korpusa') === -1) {
+    if (path.indexOf('17a89c5616404e77/korpusa') === -1) {
         getCat(catalogs, ++from, collection, db);
 
         return
     }
     */
 
-    DNS.getPrices(catalogs[from], function(items) {
+    DNS.getPrices(path, function(items) {
         items && items.forEach(function(item) {
             item.price.sale = {
                 percent: 0,

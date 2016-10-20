@@ -132,7 +132,7 @@ function getPrices(path, callback, page, items) {
             }
 
             if (!data.isEnd) {
-                console.log(path + ' - ' + page);
+                console.log(path + ' - ' + page + ' - parsed');
                 setTimeout(function(){
                     getPrices(path, callback, page + 1, items);
                 }, Math.random() * 2500);
