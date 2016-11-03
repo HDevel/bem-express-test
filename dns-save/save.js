@@ -1,9 +1,10 @@
-var DNS = require('./dns-get');
-var fs = require('fs');
-var progressFile = './dns-save/.current-progress';
-var blackList = require('./black-list');
-var dbCollection = 'items';
-var MongoClient = require('mongodb').MongoClient;
+var DNS = require('./dns-get'),
+    fs = require('fs'),
+    progressFile = './dns-save/.current-progress',
+    blackList = require('./black-list'),
+    shuffle = require('./shuffle'),
+    dbCollection = 'items',
+    MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
 var mongoProps = require('./../mongo-path');
@@ -15,7 +16,7 @@ DNS.getCatalogs(function(catalogs) {
         db.authenticate(mongoProps.user, mongoProps.password, function(err, res) {
             var collection = db.collection(dbCollection);
 
-            getCat(catalogs, 0, collection, db);
+            getCat(shuffle(catalogs), 0, collection, db);
         });
     });
 
