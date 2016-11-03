@@ -1,7 +1,12 @@
 var fs = require('fs'),
     MongoClient = require('mongodb').MongoClient,
     combination = require('./combinations'),
-    mongoProps = require('./../mongo-path');
+    mongoProps = require('./../mongo-path'),
+    botBlackList = [
+        'Scanbot',
+        'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'
+    ];
 
 module.exports = function(req, callback) {
     var date = new Date(),
@@ -13,7 +18,9 @@ module.exports = function(req, callback) {
             date: date
         };
 
-    fs.appendFile('./logs/' + fileName, JSON.stringify(log) + '\n');
+    if (botBlackList.indexOf(log.UA) === -1) {
+        fs.appendFile('./logs/' + fileName, JSON.stringify(log) + '\n');
+    }
 
     var text = (req.query.text || '').toString().trim(),
         diff = parseFloat(req.query.diff || 0),
