@@ -10,13 +10,20 @@ var fs = require('fs'),
 
 module.exports = function(req, callback) {
     var date = new Date(),
-        fileName = 'req-log_' + date.getFullYear() + '-' + date.getDate() + '-' + (date.getMonth() + 1),
+        month = String(date.getMonth() + 1),
+        day = String(date.getDate()),
+        fileName,
         log = {
             UA: req.get('User-Agent'),
             address: req.connection.remoteAddress,
             query: JSON.stringify(req.query),
             date: date
         };
+
+    month = month.length === 1 ? '0' + month : month;
+    day = day.length === 1 ? '0' + day : day;
+
+    fileName = 'req-log_' + date.getFullYear() + '-' + month + '-' + day;
 
     if (botBlackList.indexOf(log.UA) === -1) {
         fs.appendFile('./logs/' + fileName, JSON.stringify(log) + '\n');
