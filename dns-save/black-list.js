@@ -1,4 +1,5 @@
 module.exports = [
+    '/catalog/markdown/',
     '/catalog/search/products-presearch/',
     '/catalog/product/compare/',
     '/catalog/17aa72ab16404e77/noutbuki-i-planshety/',

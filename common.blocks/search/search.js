@@ -69,7 +69,7 @@ modules.define('search', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) 
                         this.emit('search', data);
                     }.bind(this)
                 });
-            }.bind(this), 500);
+            }.bind(this), 1000);
         }
     }));
 

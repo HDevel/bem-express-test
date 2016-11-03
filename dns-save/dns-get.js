@@ -112,8 +112,8 @@ function getPrices(path, callback, page, items) {
                         prevPrice = prevPriceReg.exec(rawItem),
                         prevPrice = Number(prevPrice && prevPrice[1].replace(/ /g, '') || 0),
 
-                        priceReg = /data-product-param="price" data-value="([0-9]+)"/,
-                        price = Number(priceReg.exec(rawItem)[1]),
+                        priceReg = /data-product-param="price" data-value="[0-9.]+">([0-9 ]+)</,
+                        price = Number(priceReg.exec(rawItem)[1].replace(/ /g, '')),
 
                         date = new Date().getTime();
 
@@ -135,7 +135,7 @@ function getPrices(path, callback, page, items) {
                 console.log(path + ' - ' + page + ' - parsed');
                 setTimeout(function(){
                     getPrices(path, callback, page + 1, items);
-                }, Math.random() * 2500);
+                }, Math.random() * 1500 + 1000);
             } else {
                 console.log(path + ' - done');
                 callback(items);
@@ -147,7 +147,7 @@ function getPrices(path, callback, page, items) {
 
         setTimeout(function(){
             getPrices(path, callback, page + 1, items);
-        }, Math.random() * 2500);
+        }, Math.random() * 1500 + 1000);
     });
 }
 
