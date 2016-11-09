@@ -68,7 +68,7 @@ module.exports = function(req, callback) {
                 .limit(!text && !diff ? 500 : 150)
                 .toArray(function(err, docs) {
                     db.close();
-                    callback(docs
+                    callback(docs && docs
                         .map(function(item) {
                             return {
                                 block: 'item',
