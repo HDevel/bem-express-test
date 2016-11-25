@@ -184,5 +184,6 @@ module.exports = [
     '/catalog/17aa85f716404e77/dlya-stroitelnyx-pylesosov/',
     '/catalog/17a9c44516404e77/sredstva-zashhity/',
     '/catalog/product/add-to-compare/',
-    '/catalog/product/get-avails/'
+    '/catalog/product/get-avails/',
+    '/catalog/17a8971716404e77/pk-i-drugie-platformy/'
 ];
