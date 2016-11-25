@@ -13,6 +13,8 @@ function getCatalogs(callback) {
         data = '';
 
     http.get(options, function(res) {
+        res.setEncoding('utf8');
+
         res.on("data", function(chunk) {
             data += chunk;
         });
@@ -62,6 +64,8 @@ function getPrices(path, callback, page, items) {
     console.log(path + ' - ' + page + ' - start');
 
     http.get(options, function(res) {
+        res.setEncoding('utf8');
+
         res.on("data", function(chunk) {
             data += chunk;
         });
