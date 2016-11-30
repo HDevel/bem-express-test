@@ -1,4 +1,5 @@
-var http = require('http');
+var http = require('http'),
+    donePatch = [];
 
 function getCatalogs(callback) {
     var options = {
@@ -39,25 +40,38 @@ function getCatalogs(callback) {
             callback(data);
         });
     }).on('error', function(e) {
-        setTimeout(function(){
+        setTimeout(function() {
             getCatalogs(callback);
         }, 1000);
     });
 }
 
 function getPrices(path, callback, page, items) {
-    var page = page || 0;
-    var offset = 50 * page;
-    var options = {
-        host: 'www.dns-shop.ru',
-        port: 80,
-        path: path + '?p=' + page + '&offset=' + offset,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            cookie: 'city_path=simferopol'
-        }
-    };
-    var data = '';
+    var page = page || 0,
+        offset = 50 * page,
+        options = {
+            host: 'www.dns-shop.ru',
+            port: 80,
+            path: path + '?p=' + page + '&offset=' + offset,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                cookie: 'city_path=simferopol'
+            }
+        },
+        data = '',
+        exitTimeout,
+        sec = 1000,
+        min = 60 * sec;
+
+    if (donePatch[path + page]) {
+        exit();
+
+        return
+    }
+
+    donePatch[path + page] = true;
+
+    exit(min * 3);
 
     items = items || [];
 
@@ -69,18 +83,24 @@ function getPrices(path, callback, page, items) {
         res.on("data", function(chunk) {
             data += chunk;
         });
+
         res.on("end", function() {
-            try{
+            clearTimeout(exitTimeout);
+
+            console.log(path + ' - ' + page + ' - try');
+            try {
                 data = JSON.parse(data);
-            } catch(e){}
+            } catch (e) {
+            }
 
             if (typeof data === 'string') {
+                console.log(path + ' - ' + page + ' - string');
                 var title = data.match(/<title>.+<\/title>/g);
 
                 console.log('JSON parse error at - ' + new Date());
                 console.log(path + ' - ' + page + ' - data');
 
-                if(title) {
+                if (title) {
                     console.log(title[0]);
                 }
 
@@ -137,9 +157,8 @@ function getPrices(path, callback, page, items) {
 
             if (!data.isEnd) {
                 console.log(path + ' - ' + page + ' - parsed');
-                setTimeout(function(){
-                    getPrices(path, callback, page + 1, items);
-                }, Math.random() * 1500 + 1000);
+
+                exit();
             } else {
                 console.log(path + ' - done');
                 callback(items);
@@ -149,10 +168,18 @@ function getPrices(path, callback, page, items) {
     }).on('error', function(e) {
         console.log(path + ' - error');
 
-        setTimeout(function(){
-            getPrices(path, callback, page + 1, items);
-        }, Math.random() * 1500 + 1000);
+        exit();
     });
+
+    function exit(time) {
+        clearTimeout(exitTimeout);
+
+        exitTimeout = setTimeout(function() {
+            time && console.log(path + ' - terminate');
+
+            getPrices(path, callback, page + 1, items);
+        }, time || (Math.random() * 1500 + 1000));
+    }
 }
 
 module.exports = {
