@@ -9,11 +9,18 @@ var DNS = require('./dns-get'),
     MongoClient = require('mongodb').MongoClient,
     botUsersFile = '.bot-users',
     botUsers,
-    botUsersWish = {};
+    botUsersWish = {},
+    exitTimeout,
+    sec = 1000,
+    min = 60 * sec;
+
+timeToExit();
 
 if (!fs.existsSync(botUsersFile)) {
     fs.writeFileSync(botUsersFile, JSON.stringify({}));
 }
+
+updateWishs();
 
 // Connection URL
 var mongoProps = require('./../mongo-path');
@@ -66,8 +73,7 @@ function getCat(catalogs, from, collection, db) {
     */
 
     DNS.getPrices(path, function(items) {
-        updateWishs();
-
+        timeToExit();
         items && items.forEach(function(item) {
             item.price.sale = {
                 percent: 0,
@@ -135,6 +141,7 @@ function getCat(catalogs, from, collection, db) {
 }
 
 function sendSale(item) {
+    console.log('tele sale');
     for (var wish in botUsersWish) {
         if (botUsersWish.hasOwnProperty(wish) && item.name.toLowerCase().indexOf(wish) >= 0) {
             botUsersWish[wish].forEach(function(userId) {
@@ -145,6 +152,7 @@ function sendSale(item) {
                     .replace('$url$', item.url)
                     .replace('$text$', item.name);
 
+                console.log('bot send message');
                 bot.sendMessage(userId, html, {
                     parse_mode: 'HTML'
                 });
@@ -173,4 +181,16 @@ function updateWishs() {
             }
         }
     }
+}
+
+function exitTO() {
+    console.log('exit by timeout');
+
+    process.exit();
+}
+
+function timeToExit(){
+    clearTimeout(exitTimeout);
+
+    exitTimeout = setTimeout(exitTO, 15 * min);
 }
