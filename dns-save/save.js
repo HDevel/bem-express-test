@@ -91,6 +91,12 @@ function getCat(catalogs, from, collection, db) {
                         last = item.prices[lastID],
                         current = item.price;
 
+                    if (item.name.indexOf('�') !== -1 && doc.name.indexOf('�') === -1) {
+                        item.name = doc.name;
+                    }
+
+                    item.query = item.name.toLowerCase();
+
                     if (last.price != current.price || last.prevPrice != current.prevPrice) {
                         current.sale = {
                             percent: (current.price / last.price) - 1,
@@ -117,12 +123,6 @@ function getCat(catalogs, from, collection, db) {
                         item.prices[lastID] = current;
                     }
 
-                    if (item.name.indexOf('�') !== -1 && doc.name.indexOf('�') === -1) {
-                        item.name = doc.name;
-                    }
-
-                    item.query = item.name.toLowerCase();
-
                     collection.update({ code: item.code }, item);
                 }
             });
@@ -136,7 +136,7 @@ function getCat(catalogs, from, collection, db) {
 
 function sendSale(item) {
     for (var wish in botUsersWish) {
-        if (botUsersWish.hasOwnProperty(wish) && item.name.indexOf(wish) >= 0) {
+        if (botUsersWish.hasOwnProperty(wish) && item.name.toLowerCase().indexOf(wish) >= 0) {
             botUsersWish[wish].forEach(function(userId) {
                 var html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
                     .replace('$sale$', item.sale * -1)
