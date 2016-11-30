@@ -1,10 +1,18 @@
 var DNS = require('./dns-get'),
     fs = require('fs'),
+    TelegramBot = require('node-telegram-bot-api'),
+    bot = new TelegramBot(require('./../bot-token')),
     progressFile = './dns-save/.current-progress',
     blackList = require('./black-list'),
     shuffle = require('./shuffle'),
     dbCollection = 'items',
-    MongoClient = require('mongodb').MongoClient;
+    MongoClient = require('mongodb').MongoClient,
+    botUsersFile = '.bot-users',
+    botUsers;
+
+if (!fs.existsSync(botUsersFile)) {
+    fs.writeFileSync(botUsersFile, JSON.stringify({}));
+}
 
 // Connection URL
 var mongoProps = require('./../mongo-path');
@@ -57,6 +65,8 @@ function getCat(catalogs, from, collection, db) {
     */
 
     DNS.getPrices(path, function(items) {
+        botUsers = JSON.parse(fs.readFileSync(botUsersFile));
+
         items && items.forEach(function(item) {
             item.price.sale = {
                 percent: 0,
@@ -88,6 +98,16 @@ function getCat(catalogs, from, collection, db) {
 
                         current.firstSeenDate = current.lastSeenDate;
 
+                        if (current.sale.price < 0) {
+                            sendSale({
+                                current: current.price,
+                                last: last.price,
+                                sale: current.sale.price,
+                                url: item.url,
+                                name: item.name
+                            });
+                        }
+
                         item.prices.push(current);
                     } else {
                         current.sale = last.sale;
@@ -111,4 +131,30 @@ function getCat(catalogs, from, collection, db) {
             getCat(catalogs, ++from, collection, db);
         }, Math.random() * 1500 + 1000);
     });
+}
+
+function sendSale(item) {
+    for (var user in botUsers) {
+        if (botUsers.hasOwnProperty(user)) {
+            var botItems = botUsers[user].items;
+
+            for (var botItem in botItems) {
+                if (
+                    botItems.hasOwnProperty(botItem) &&
+                    item.name.toLowerCase().match(botItem)
+                ) {
+                    var html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
+                        .replace('$sale$', item.sale * -1)
+                        .replace('$current$', item.current)
+                        .replace('$last$', item.last)
+                        .replace('$url$', item.url)
+                        .replace('$text$', item.name);
+
+                    bot.sendMessage(user, html, {
+                        parse_mode: 'HTML'
+                    });
+                }
+            }
+        }
+    }
 }
