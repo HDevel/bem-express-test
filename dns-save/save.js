@@ -8,7 +8,8 @@ var DNS = require('./dns-get'),
     dbCollection = 'items',
     MongoClient = require('mongodb').MongoClient,
     botUsersFile = '.bot-users',
-    botUsers;
+    botUsers,
+    botUsersWish = {};
 
 if (!fs.existsSync(botUsersFile)) {
     fs.writeFileSync(botUsersFile, JSON.stringify({}));
@@ -65,7 +66,7 @@ function getCat(catalogs, from, collection, db) {
     */
 
     DNS.getPrices(path, function(items) {
-        botUsers = JSON.parse(fs.readFileSync(botUsersFile));
+        updateWishs();
 
         items && items.forEach(function(item) {
             item.price.sale = {
@@ -134,25 +135,40 @@ function getCat(catalogs, from, collection, db) {
 }
 
 function sendSale(item) {
+    for (var wish in botUsersWish) {
+        if (botUsersWish.hasOwnProperty(wish) && item.name.indexOf(wish) >= 0) {
+            botUsersWish[wish].forEach(function(userId) {
+                var html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
+                    .replace('$sale$', item.sale * -1)
+                    .replace('$current$', item.current)
+                    .replace('$last$', item.last)
+                    .replace('$url$', item.url)
+                    .replace('$text$', item.name);
+
+                bot.sendMessage(userId, html, {
+                    parse_mode: 'HTML'
+                });
+            });
+        }
+    }
+}
+
+function updateWishs() {
+    botUsers = JSON.parse(fs.readFileSync(botUsersFile));
+    botUsersWish = {};
+
     for (var user in botUsers) {
         if (botUsers.hasOwnProperty(user)) {
             var botItems = botUsers[user].items;
 
             for (var botItem in botItems) {
                 if (
-                    botItems.hasOwnProperty(botItem) &&
-                    item.name.toLowerCase().match(botItem)
+                    botItems.hasOwnProperty(botItem)
                 ) {
-                    var html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
-                        .replace('$sale$', item.sale * -1)
-                        .replace('$current$', item.current)
-                        .replace('$last$', item.last)
-                        .replace('$url$', item.url)
-                        .replace('$text$', item.name);
-
-                    bot.sendMessage(user, html, {
-                        parse_mode: 'HTML'
-                    });
+                    if (!botUsersWish[botItem]) {
+                        botUsersWish[botItem] = [];
+                    }
+                    botUsersWish[botItem].push(user);
                 }
             }
         }
