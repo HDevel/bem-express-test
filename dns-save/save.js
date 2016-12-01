@@ -86,6 +86,13 @@ function getCat(catalogs, from, collection, db) {
                     item.prices = [item.price];
                     item.query = item.name.toLowerCase();
 
+                    sendSale({
+                        current: item.price.price,
+                        sale: 0,
+                        url: item.url,
+                        name: item.name
+                    });
+
                     collection.insert(item);
                 } else {
                     var doc = docs[0];
@@ -144,12 +151,21 @@ function sendSale(item) {
     for (var wish in botUsersWish) {
         if (botUsersWish.hasOwnProperty(wish) && item.name.toLowerCase().indexOf(wish) >= 0) {
             botUsersWish[wish].forEach(function(userId) {
-                var html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
-                    .replace('$sale$', item.sale * -1)
-                    .replace('$current$', item.current)
-                    .replace('$last$', item.last)
-                    .replace('$url$', item.url)
-                    .replace('$text$', item.name);
+                var html;
+
+                if (item.sale !== 0) {
+                    html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
+                        .replace('$sale$', item.sale * -1)
+                        .replace('$current$', item.current)
+                        .replace('$last$', item.last)
+                        .replace('$url$', item.url)
+                        .replace('$text$', item.name);
+                } else {
+                    html = 'Товар появился в продаже, по цене $current$₽\n<a href="$url$">$text$</a>'
+                        .replace('$current$', item.current)
+                        .replace('$url$', item.url)
+                        .replace('$text$', item.name);
+                }
 
                 console.log('bot send message');
                 bot.sendMessage(userId, html, {
