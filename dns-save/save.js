@@ -156,13 +156,13 @@ function sendSale(item) {
                 if (item.sale !== 0) {
                     html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
                         .replace('$sale$', item.sale * -1)
-                        .replace('$current$', item.current)
-                        .replace('$last$', item.last)
+                        .replace('$current$', priceRound(item.current))
+                        .replace('$last$', priceRound(item.last))
                         .replace('$url$', item.url)
                         .replace('$text$', item.name);
                 } else {
                     html = 'Товар появился в продаже, по цене $current$₽\n<a href="$url$">$text$</a>'
-                        .replace('$current$', item.current)
+                        .replace('$current$', priceRound(item.current))
                         .replace('$url$', item.url)
                         .replace('$text$', item.name);
                 }
@@ -208,4 +208,16 @@ function timeToExit(){
     clearTimeout(exitTimeout);
 
     exitTimeout = setTimeout(exitTO, 15 * min);
+}
+
+function priceRound(price) {
+    var str = price.toString();
+
+    if (str.slice(-1) === '9') {
+        return price + 1;
+    }
+
+    if (str.slice(-2) === '90') {
+        return price + 10;
+    }
 }
