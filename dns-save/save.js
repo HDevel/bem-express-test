@@ -20,8 +20,6 @@ if (!fs.existsSync(botUsersFile)) {
     fs.writeFileSync(botUsersFile, JSON.stringify({}));
 }
 
-updateWishs();
-
 // Connection URL
 var mongoProps = require('./../mongo-path');
 
@@ -40,6 +38,7 @@ DNS.getCatalogs(function(catalogs) {
 
 function getCat(catalogs, from, collection, db) {
     fs.writeFileSync(progressFile, from / (catalogs.length - 1));
+    updateWishs();
 
     // console.log('catalog ' + from + ' of ' + catalogs.length);
 
