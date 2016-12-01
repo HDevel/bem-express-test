@@ -155,7 +155,7 @@ function sendSale(item) {
 
                 if (item.sale !== 0) {
                     html = 'Товар подешевел на $sale$₽ \n$current$₽ ($last$₽)\n<a href="$url$">$text$</a>'
-                        .replace('$sale$', item.sale * -1)
+                        .replace('$sale$', priceRound(item.sale * -1))
                         .replace('$current$', priceRound(item.current))
                         .replace('$last$', priceRound(item.last))
                         .replace('$url$', item.url)
@@ -213,6 +213,8 @@ function timeToExit(){
 function priceRound(price) {
     var str = price.toString();
 
+    price = parseInt(price);
+
     if (str.slice(-1) === '9') {
         return price + 1;
     }
@@ -220,4 +222,6 @@ function priceRound(price) {
     if (str.slice(-2) === '90') {
         return price + 10;
     }
+
+    return price
 }
