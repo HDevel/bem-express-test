@@ -72,8 +72,16 @@ bot.onText(/\/list/, function(msg) {
     }
 
     bot.sendMessage(id, 'Вы следите за: \n"' + items.join('"\n"') + '"', { reply_markup: { hide_keyboard: true } });
+});
 
-    saveUsers();
+// status - *сервис* Статус обновления базы
+bot.onText(/\/status/, function(msg) {
+    var id = msg.chat.id,
+        statusFile = fs.readFileSync('./dns-save/.current-progress'),
+        status = 100 * Number(statusFile || 0),
+        message = status === 0 ? 'Всё готово' : 'Готово ' + status.toFixed(2) + '%';
+
+    bot.sendMessage(id, message, { reply_markup: { hide_keyboard: true } });
 });
 
 function createId(id) {
