@@ -1,28 +1,57 @@
 var http = require('http'),
     donePatch = [],
-    cookie = require('./cookie'),
-    city = ' city_path=simferopol;';
+    retries = 2,
+    cookie;
 
-function getRandomCookie() {
-    return cookie[Math.floor(Math.random() * cookie.length)];
+function getCookie(res) {
+    var setCookie = res.headers['set-cookie'],
+        allowedCookie = [
+            'rerf',
+            'ipp_uid1',
+            'ipp_uid2'
+        ],
+        cookieMap = {};
+
+    if (setCookie) {
+        cookie = ['city_path=simferopol'];
+
+        res.headers['set-cookie'].forEach(function(v) {
+            var cook = v.split(';')[0],
+                key = cook.split('=')[0];
+
+            if (allowedCookie.indexOf(key) >= 0 && !cookieMap[key]) {
+                cookieMap[key] = true;
+                cookie.push(cook);
+            }
+        });
+
+        if (cookie.length > 1) {
+            cookie = cookie.join(';');
+
+            console.log('cookie = ' + cookie);
+        } else {
+            cookie = undefined
+        }
+    }
 }
 
 function getCatalogs(callback) {
-    var cookie = getRandomCookie() + city,
-        options = {
+    var options = {
             host: 'www.dns-shop.ru',
             port: 80,
-            path: '',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                cookie: cookie
-            }
+            path: ''
         },
         data = '';
 
-    console.log('getCatalogs cookie - ' + cookie);
+    if (cookie) {
+        options.headers = {
+            cookie: cookie
+        }
+    }
 
     http.get(options, function(res) {
+        getCookie(res);
+
         res.setEncoding('utf8');
 
         res.on("data", function(chunk) {
@@ -31,6 +60,10 @@ function getCatalogs(callback) {
         res.on("end", function() {
             if (data === 'TemporaryRedirect' || data.indexOf('<title>302 Found</title>') > -1) {
                 console.log(data);
+                if (retries > 0) {
+                    retries--;
+                    getCatalogs(callback);
+                }
                 return
             }
 
@@ -65,14 +98,13 @@ function getCatalogs(callback) {
 function getPrices(path, callback, page, items) {
     var page = page || 0,
         offset = 50 * page,
-        cookie = getRandomCookie() + city,
         options = {
             host: 'www.dns-shop.ru',
             port: 80,
             path: path + '?p=' + page + '&offset=' + offset,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                cookie: cookie
+                cookie: cookie || ''
             }
         },
         data = '',
@@ -95,6 +127,10 @@ function getPrices(path, callback, page, items) {
     console.log(path + ' - ' + page + ' - start (' + cookie + ')');
 
     http.get(options, function(res) {
+        if (!cookie) {
+            getCookie(res);
+        }
+
         res.setEncoding('utf8');
 
         res.on("data", function(chunk) {
