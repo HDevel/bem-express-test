@@ -34,10 +34,11 @@ function getCatalogs(callback) {
                 return
             }
 
-            var obj = {};
-            data = data
-                .match(/\/catalog\/[a-z0-9/-]+/g)
-                .filter(function(v) {
+            var obj = {},
+                rtn = data.match(/\/catalog\/[a-z0-9/-]+/g);
+
+            if (rtn) {
+                rtn = rtn.filter(function(v) {
                     if (obj[v]) {
                         return false;
                     }
@@ -45,8 +46,14 @@ function getCatalogs(callback) {
 
                     return true;
                 });
+            } else {
+                console.log('getCatalogs error:');
+                console.log(data);
 
-            callback(data);
+                rtn = [];
+            }
+
+            callback(rtn);
         });
     }).on('error', function(e) {
         setTimeout(function() {
