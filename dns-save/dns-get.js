@@ -1,5 +1,11 @@
 var http = require('http'),
-    donePatch = [];
+    donePatch = [],
+    cookie = require('./cookie'),
+    city = ' city_path=simferopol;';
+
+function getRandomCookie() {
+    return cookie[Math.floor(Math.random() * cookie.length)];
+}
 
 function getCatalogs(callback) {
     var options = {
@@ -8,7 +14,7 @@ function getCatalogs(callback) {
             path: '',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                cookie: 'city_path=simferopol'
+                cookie: getRandomCookie() + city
             }
         },
         data = '';
@@ -55,7 +61,7 @@ function getPrices(path, callback, page, items) {
             path: path + '?p=' + page + '&offset=' + offset,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                cookie: 'city_path=simferopol'
+                cookie: getRandomCookie() + city
             }
         },
         data = '',

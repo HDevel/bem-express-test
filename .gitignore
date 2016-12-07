@@ -16,6 +16,7 @@ static/index.min.*
 .bot-users
 bot-token.js
 bower_components/
+dns-save/cookie.js
 dns-save/.current-progress
 logs/
 mongo-data/
