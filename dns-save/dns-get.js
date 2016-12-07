@@ -8,16 +8,19 @@ function getRandomCookie() {
 }
 
 function getCatalogs(callback) {
-    var options = {
+    var cookie = getRandomCookie() + city,
+        options = {
             host: 'www.dns-shop.ru',
             port: 80,
             path: '',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                cookie: getRandomCookie() + city
+                cookie: cookie
             }
         },
         data = '';
+
+    console.log('getCatalogs cookie - ' + cookie);
 
     http.get(options, function(res) {
         res.setEncoding('utf8');
@@ -55,13 +58,14 @@ function getCatalogs(callback) {
 function getPrices(path, callback, page, items) {
     var page = page || 0,
         offset = 50 * page,
+        cookie = getRandomCookie() + city,
         options = {
             host: 'www.dns-shop.ru',
             port: 80,
             path: path + '?p=' + page + '&offset=' + offset,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                cookie: getRandomCookie() + city
+                cookie: cookie
             }
         },
         data = '',
@@ -81,7 +85,7 @@ function getPrices(path, callback, page, items) {
 
     items = items || [];
 
-    console.log(path + ' - ' + page + ' - start');
+    console.log(path + ' - ' + page + ' - start (' + cookie + ')');
 
     http.get(options, function(res) {
         res.setEncoding('utf8');
