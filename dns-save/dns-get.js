@@ -1,68 +1,25 @@
-var http = require('http'),
+var request = require('request'),
     donePatch = [],
     retries = 2,
-    cookie;
-
-function getCookie(res) {
-    var setCookie = res.headers['set-cookie'],
-        allowedCookie = [
-            'rerf',
-            'ipp_uid1',
-            'ipp_uid2'
-        ],
-        cookieMap = {};
-
-    if (setCookie) {
-        cookie = ['city_path=simferopol'];
-
-        res.headers['set-cookie'].forEach(function(v) {
-            var cook = v.split(';')[0],
-                key = cook.split('=')[0];
-
-            if (allowedCookie.indexOf(key) >= 0 && !cookieMap[key]) {
-                cookieMap[key] = true;
-                cookie.push(cook);
-            }
-        });
-
-        if (cookie.length > 1) {
-            cookie = cookie.join(';');
-
-            console.log('cookie = ' + cookie);
-        } else {
-            cookie = undefined
-        }
-    }
-}
+    headers = {
+        'X-Requested-With': 'XMLHttpRequest',
+        cookie: 'city_path=simferopol;'
+    };
 
 function getCatalogs(callback) {
-    var options = {
-            host: 'www.dns-shop.ru',
-            port: 80,
-            path: ''
-        },
-        data = '';
-
-    if (cookie) {
-        options.headers = {
-            cookie: cookie
-        }
-    }
-
-    http.get(options, function(res) {
-        getCookie(res);
-
-        res.setEncoding('utf8');
-
-        res.on("data", function(chunk) {
-            data += chunk;
-        });
-        res.on("end", function() {
-            if (data === 'TemporaryRedirect' || data.indexOf('<title>302 Found</title>') > -1) {
-                console.log(data);
+    request({
+        url: 'http://www.dns-shop.ru/',
+        encoding: 'utf8',
+        jar: true,
+        followAllRedirects: true,
+        maxRedirects: 2,
+        headers: headers
+    }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            if (body === 'TemporaryRedirect' || body.indexOf('<title>302 Found</title>') > -1) {
+                console.log(body);
                 if (retries > 0) {
                     retries--;
-                    cookie = undefined;
 
                     getCatalogs(callback);
                 }
@@ -70,7 +27,7 @@ function getCatalogs(callback) {
             }
 
             var obj = {},
-                rtn = data.match(/\/catalog\/[a-z0-9/-]+/g);
+                rtn = body.match(/\/catalog\/[a-z0-9/-]+/g);
 
             if (rtn) {
                 rtn = rtn.filter(function(v) {
@@ -83,33 +40,25 @@ function getCatalogs(callback) {
                 });
             } else {
                 console.log('getCatalogs error:');
-                console.log(data);
+                console.log(body);
 
                 rtn = [];
             }
 
             callback(rtn);
-        });
-    }).on('error', function(e) {
-        setTimeout(function() {
-            getCatalogs(callback);
-        }, 1000);
+        } else {
+            console.log(error);
+
+            setTimeout(function() {
+                getCatalogs(callback);
+            }, 5000);
+        }
     });
 }
 
 function getPrices(path, callback, page, items) {
     var page = page || 0,
         offset = 50 * page,
-        options = {
-            host: 'www.dns-shop.ru',
-            port: 80,
-            path: path + '?p=' + page + '&offset=' + offset,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                cookie: cookie || ''
-            }
-        },
-        data = '',
         exitTimeout,
         sec = 1000,
         min = 60 * sec;
@@ -126,31 +75,27 @@ function getPrices(path, callback, page, items) {
 
     items = items || [];
 
-    console.log(path + ' - ' + page + ' - start (' + cookie + ')');
+    request({
+        url: 'http://www.dns-shop.ru' + path + '?p=' + page + '&offset=' + offset,
+        encoding: 'utf8',
+        jar: true,
+        followAllRedirects: true,
+        maxRedirects: 2,
+        headers: headers
+    }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
 
-    http.get(options, function(res) {
-        if (!cookie) {
-            getCookie(res);
-        }
-
-        res.setEncoding('utf8');
-
-        res.on("data", function(chunk) {
-            data += chunk;
-        });
-
-        res.on("end", function() {
             clearTimeout(exitTimeout);
 
             console.log(path + ' - ' + page + ' - try');
             try {
-                data = JSON.parse(data);
+                body = JSON.parse(body);
             } catch (e) {
             }
 
-            if (typeof data === 'string') {
+            if (typeof body === 'string') {
                 console.log(path + ' - ' + page + ' - string');
-                var title = data.match(/<title>.+<\/title>/g);
+                var title = body.match(/<title>.+<\/title>/g);
 
                 console.log('JSON parse error at - ' + new Date());
                 console.log(path + ' - ' + page + ' - data');
@@ -159,13 +104,13 @@ function getPrices(path, callback, page, items) {
                     console.log(title[0]);
                 }
 
-                console.log(data.replace(/[ 	\n]+/gm, ' ').slice(0, 2000));
+                console.log(body.replace(/[ 	\n]+/gm, ' ').slice(0, 2000));
 
                 callback(items);
                 return
             }
 
-            var rawData = data.content.split('<div class="product" data-id="product"');
+            var rawData = body.content.split('<div class="product" data-id="product"');
 
             for (var i = 1; i < rawData.length; i++) {
                 var rawItem = rawData[i],
@@ -210,7 +155,7 @@ function getPrices(path, callback, page, items) {
                 }
             }
 
-            if (!data.isEnd) {
+            if (!body.isEnd) {
                 console.log(path + ' - ' + page + ' - parsed');
 
                 exit();
@@ -219,11 +164,11 @@ function getPrices(path, callback, page, items) {
                 callback(items);
             }
 
-        });
-    }).on('error', function(e) {
-        console.log(path + ' - error');
+        } else {
+            console.log(path + ' - error');
 
-        exit();
+            exit();
+        }
     });
 
     function exit(time) {
