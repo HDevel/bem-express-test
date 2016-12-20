@@ -62,6 +62,8 @@ function getCatalogs(callback) {
                 console.log(data);
                 if (retries > 0) {
                     retries--;
+                    cookie = undefined;
+
                     getCatalogs(callback);
                 }
                 return
