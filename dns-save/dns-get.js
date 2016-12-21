@@ -1,6 +1,7 @@
 var request = require('request'),
     donePatch = [],
     retries = 2,
+    pageRetries = 0,
     headers = {
         'X-Requested-With': 'XMLHttpRequest',
         cookie: 'city_path=simferopol;'
@@ -165,9 +166,17 @@ function getPrices(path, callback, page, items) {
             }
 
         } else {
-            console.log(path + ' - error');
+            console.log(path + ' (page: ' + page + ') - error');
 
-            exit();
+            if (pageRetries < 3) {
+                pageRetries++;
+
+                exit();
+            } else {
+                pageRetries = 0;
+
+                callback(items);
+            }
         }
     });
 
