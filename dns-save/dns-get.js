@@ -1,7 +1,8 @@
 var request = require('request'),
     donePatch = [],
     retries = 2,
-    pageRetries = 3,
+    pageRetries = 2,
+    exitTimeout,
     headers = {
         'X-Requested-With': 'XMLHttpRequest',
         cookie: 'city_path=simferopol;'
@@ -60,20 +61,14 @@ function getCatalogs(callback) {
 function getPrices(path, callback, page, items) {
     var page = page || 0,
         offset = 50 * page,
-        exitTimeout,
         sec = 1000,
         min = 60 * sec;
 
-    if (donePatch[path + page] || donePatch[path] >= pageRetries) {
-        exit();
-
-        return
+    if (donePatch[path] >= pageRetries) {
+        return;
     }
 
-    donePatch[path + page] = true;
-    donePatch[path] = donePatch[path] || 1;
-
-    exit(min * 3);
+    exit(min);
 
     items = items || [];
 
@@ -169,8 +164,11 @@ function getPrices(path, callback, page, items) {
         } else {
             console.log(path + ' (page: ' + page + ') - error');
 
+            donePatch[path] = donePatch[path] || 0;
+            donePatch[path]++;
+
             if (donePatch[path] < pageRetries) {
-                donePatch[path]++;
+                page--;
 
                 exit();
             } else {
