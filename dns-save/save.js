@@ -11,6 +11,7 @@ var DNS = require('./dns-get'),
     botUsers,
     botUsersWish = {},
     exitTimeout,
+    errors = 0,
     sec = 1000,
     min = 60 * sec;
 
@@ -49,7 +50,7 @@ function getCat(catalogs, from, collection, db) {
         setTimeout(function(){
             db.close();
             process.exit();
-        }, 60 * 1000);
+        }, min);
 
         return
     }
@@ -71,7 +72,18 @@ function getCat(catalogs, from, collection, db) {
     }
     */
 
-    DNS.getPrices(path, function(items) {
+    DNS.getPrices(path, function(items, error) {
+        if (error) {
+            errors++;
+
+            if (errors > 10) {
+                console.log('Too many errors');
+                getCat(catalogs, catalogs.length, collection, db);
+
+                return;
+            }
+        }
+
         timeToExit();
         items && items.forEach(function(item) {
             item.price.sale = {

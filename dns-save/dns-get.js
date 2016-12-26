@@ -172,7 +172,7 @@ function getPrices(path, callback, page, items) {
 
                 exit();
             } else {
-                callback(items);
+                callback(items, 'error');
             }
         }
     });
