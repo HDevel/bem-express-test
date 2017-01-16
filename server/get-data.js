@@ -50,7 +50,9 @@ module.exports = function(req, callback) {
                 search = text.slice(1, -1);
             }
 
-            find.query = new RegExp(search);
+            if (search) {
+                find.query = new RegExp(search);
+            }
 
             if (!text && !diff) {
 
@@ -61,6 +63,12 @@ module.exports = function(req, callback) {
 
             if (diff !== 0) {
                 find['price.sale.percent'] = diff < 0 ? { $lte: diff } : { $gte: diff };
+            }
+
+            if (req.query.id) {
+                find = {
+                    code: Number(req.query.id)
+                }
             }
 
             db.collection('items')
