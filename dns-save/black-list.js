@@ -1,4 +1,6 @@
 module.exports = [
+    '/catalog/1b5b3886db7f4e77/dlya-ukladki-i-strizhki-volos/',
+    '/catalog/e861cff2c7144e77/konstruktory-iz-dereva/',
     '/catalog/17a9c37216404e77/dlya-payalnogo-oborudovaniya/',
     '/catalog/17a8af8a16404e77/mp3-hi-fi-i-multimedia-pleery/',
     '/catalog/17aa385416404e77/dlya-frezerov/',
