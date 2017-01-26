@@ -5,7 +5,8 @@ var request = require('request'),
     exitTimeout,
     headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        cookie: 'city_path=simferopol;'
+        cookie: 'city_path=simferopol;',
+        'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; BOIE9;ENUSMSNIP)'
     };
 
 function getCatalogs(callback) {
@@ -51,6 +52,7 @@ function getCatalogs(callback) {
         } else {
             console.log('request error - ' + error);
             console.log('response code - ' + response.statusCode);
+            console.log('response body - ' + body);
 
             setTimeout(function() {
                 getCatalogs(callback);
