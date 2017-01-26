@@ -49,7 +49,8 @@ function getCatalogs(callback) {
 
             callback(rtn);
         } else {
-            console.log(error);
+            console.log('request error - ' + error);
+            console.log('response code - ' + response.statusCode);
 
             setTimeout(function() {
                 getCatalogs(callback);
