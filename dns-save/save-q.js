@@ -10,7 +10,7 @@ var fs = require('fs'),
     botUsersWish = {},
     headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        cookie: 'city_path=simferopol;',
+        cookie: 'current_path=480004732598f438d49efa0d6cbb17127f45f6d2297067ca36485dae93458e4ea%3A2%3A%7Bi%3A0%3Bs%3A12%3A%22current_path%22%3Bi%3A1%3Bs%3A36%3A%223fa69029-f683-11e3-aea1-00155d031202%22%3B%7D;',
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; BOIE9;ENUSMSNIP)'
     },
     exitTimeout,
