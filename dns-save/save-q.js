@@ -160,11 +160,11 @@ function getPrices(search, callback) {
                     code = Number(code[1]);
 
 
-                    var nameReg = /class="ec-price-item-link">([^<]+)</,
+                    var nameReg = /class="ec-price-item-link" href="[^"]+">([^<]+)</,
                         name = nameReg.exec(rawItem)[1]
                             .replace(/&quot;/g, '"'),
 
-                        urlReg = /<a href="([/a-zA-Z0-9-_]+)" class="ec-price-item-link"/,
+                        urlReg = /<a class="ec-price-item-link" href="([/a-zA-Z0-9-_]+)"/,
                         url = urlReg.exec(rawItem)[1],
 
                         imgReg = /data-image-tablet="([^"]+)"/,
