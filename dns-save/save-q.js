@@ -55,6 +55,11 @@ function savePrices(items, collection) {
         };
 
         collection.find({ code: item.code }).toArray(function(err, docs) {
+            if (err) {
+                console.log(item);
+                console.log(err);
+            }
+
             if (!docs.length) {
                 item.price.firstSeenDate = item.price.lastSeenDate;
                 item.prices = [item.price];
